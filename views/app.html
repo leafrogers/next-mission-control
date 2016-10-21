@@ -1,0 +1,41 @@
+<main>
+	<!-- Hero banner to promote your service in a few words -->
+	<div class="o-techdocs-hero">
+		<h2 class="o-techdocs-hero__title">{{title}}</h2>
+	</div>
+
+	<!-- Navigation menu and main content -->
+	<div class="o-techdocs-container">
+		<div class="o-techdocs-layout">
+
+			{{> navigation}}
+
+			<!-- Main content (outer div for layout, inner for formatting) -->
+			<div class="o-techdocs-main">
+				<div class="o-techdocs-content">
+					<h1>Info</h1>
+					<table>
+						<tbody>
+						<tr>
+							<th scope="row">Tier</th>
+							<td class="tier--{{tier}}">{{tier}}</td>
+						</tr>
+							<tr>
+								<th scope="row">Repo</th>
+								<td><a target="_blank" href="{{repo}}">{{repo}}</a></td>
+							</tr>
+							<tr>
+								<th scope="row">Heroku</th>
+								<td><a target="_blank" href="{{heroku}}">{{heroku}}</a></td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div> <!-- /o-techdocs-content -->
+
+			</div>
+
+		</div> <!-- /.o-techdocs-layout -->
+	</div> <!-- /.o-techdocs-container -->
+</main>
+
