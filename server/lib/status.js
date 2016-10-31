@@ -9,6 +9,7 @@ function getNodeStatus(node){
 		const status = {
 			region: node.region,
 			url: node.url,
+			name: node.url.replace(/https?:\/\//, '').replace('.herokuapp.com', ''),
 			health: {overall:true, statusText:'OK'}
 		};
 

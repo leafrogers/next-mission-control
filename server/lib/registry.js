@@ -11,5 +11,11 @@ function getData(){
 	return poller.getData();
 }
 
-module.exports = {init, getData};
+function getAppData(name){
+	const allApps = getData();
+	name = name.replace('ft-next-', '');
+	return allApps.find(a => a.name === name);
+}
+
+module.exports = {init, getData, getAppData};
 

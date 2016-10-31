@@ -4,7 +4,8 @@ const registry = require('./lib/registry');
 
 const controllers = {
 	home: require('./controllers/home'),
-	app: require('./controllers/app')
+	app: require('./controllers/app'),
+	apiV1: require('./controllers/api-v1')
 };
 
 const PORT = Number(process.env.PORT || 3002);
@@ -24,6 +25,8 @@ app.get('/__gtg', (req, res) => {
 app.get('/', controllers.home);
 
 app.get('/:app', controllers.app);
+
+app.use('/api/v1', controllers.apiV1);
 
 registry.init()
 	.then(() => app.listen(PORT));

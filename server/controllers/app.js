@@ -5,9 +5,7 @@ const co = require('co');
 
 module.exports = (req, res) => {
 	co(function* (){
-		const registryData = registry.getData();
-
-		const app = registryData.find(d => d.name === req.params.app);
+		const app = registry.getAppData(req.params.app);
 
 		if(!app){
 			return res.sendStatus(400);
@@ -15,10 +13,10 @@ module.exports = (req, res) => {
 
 		const viewModel = {
 			layout: 'default',
-			info: info(app),
 			metrics: {}
 		};
 
+		viewModel.info = yield info(app);
 		viewModel.status = yield status(viewModel.info);
 		res.render('app', viewModel);
 	});

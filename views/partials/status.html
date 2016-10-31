@@ -1,4 +1,4 @@
-<section class="status">
+<section class="app-section status">
 	<div class="title-bar">
 		<h2>Status</h2>
 	</div>
@@ -20,7 +20,7 @@
 
 	{{#each nodes}}
 		<div id="appRegion{{region}}" class="o-tabs__tabpanel">
-			<table>
+			<table class="status__node-status">
 				<tr>
 					<td colspan="2">{{url}}</td>
 				</tr>
@@ -33,6 +33,11 @@
 					<td class="{{#if health.overall}}status--up{{else}}status--down{{/if}}">{{health.statusText}}</td>
 				</tr>
 			</table>
+
+			<div class="status__node-actions">
+				<button class="o-buttons" id="js-node-scale-down" data-app-id="{{name}}">Scale Down &darr;</button>
+				<button class="o-buttons" id="js-node-scale-up" data-app-id="{{name}}">Scale Up &uarr;</button>
+			</div>
 		</div>
 	{{/each}}
 

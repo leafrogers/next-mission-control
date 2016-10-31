@@ -1,5 +1,5 @@
 
-<section class="info">
+<section class="app-section info">
 	<div data-o-component="o-expander" class="o-expander" data-o-expander-shrink-to="hidden">
 	<div class="title-bar">
 		<h2>Info</h2>
@@ -20,6 +20,27 @@
 				</tr>
 				</tbody>
 			</table>
+
+			<h4>Nodes</h4>
+			<table>
+				<tbody>
+					{{#each nodes}}
+						<tr>
+							<th scope="row">REGION</th>
+							<td>{{region}}</td>
+						</tr>
+						<tr>
+							<th scope="row">URL</th>
+							<td>{{url}}</td>
+						</tr>
+						<tr>
+							<th scope="row">ID</th>
+							<td>{{id}}</td>
+						</tr>
+					{{/each}}
+				</tbody>
+			</table>
+
 		</div>
 	</div>
 </section>

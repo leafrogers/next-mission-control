@@ -50,3 +50,26 @@ html, body {
 	border-color: #cc0033;
 	text-align: center;
 }
+
+.status__node-status {
+	max-width: 500px;
+
+	th {
+		width: 25%;
+		text-align: left;
+	}
+}
+
+.app-section {
+	margin-bottom: 1.5em;
+}
+
+.status__node-actions {
+	margin: 10px 0;
+	display: flex;
+	align-items: flex-start;
+}
+
+.status__node-actions button {
+	margin-right: 10px;
+}

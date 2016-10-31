@@ -33,6 +33,7 @@
   "devDependencies": {
     "@financial-times/n-heroku-tools": "^6.14.5",
     "@financial-times/n-webpack": "^1.13.0",
-    "node-sass": "^3.10.1"
+    "node-sass": "^3.10.1",
+    "webpack": "^1.13.3"
   }
 }
