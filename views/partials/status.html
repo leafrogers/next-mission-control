@@ -1,0 +1,39 @@
+<section class="status">
+	<div class="title-bar">
+		<h2>Status</h2>
+	</div>
+
+	<ul class="status-overview">
+		<li class="status-overview__item status--{{#if up}}up{{else}}down{{/if}}">
+			{{#if up}}UP{{else}}DOWN{{/if}}
+		</li>
+		<li class="status-overview__item status--{{#if healthy}}up{{else}}down{{/if}}">
+			{{#if healthy}}HEALTHY{{else}}UNHEALTHY{{/if}}
+		</li>
+	</ul>
+
+	<ul data-o-component="o-tabs" class="o-tabs o-tabs--big o-tabs--buttontabs" role="tablist">
+		{{#each nodes}}
+		<li role="tab"><a href="#appRegion{{region}}">{{region}}</a></li>
+		{{/each}}
+	</ul>
+
+	{{#each nodes}}
+		<div id="appRegion{{region}}" class="o-tabs__tabpanel">
+			<table>
+				<tr>
+					<td colspan="2">{{url}}</td>
+				</tr>
+				<tr>
+					<th scope="row"><a href="{{url}}/__gtg">GTG</a></th>
+					<td class="{{#if up}}status--up{{else}}status--down{{/if}}">{{#if up}}UP{{else}}DOWN{{/if}}</td>
+				</tr>
+				<tr>
+					<th scope="row"><a href="{{url}}/__health">HEALTH</a></th>
+					<td class="{{#if health.overall}}status--up{{else}}status--down{{/if}}">{{health.statusText}}</td>
+				</tr>
+			</table>
+		</div>
+	{{/each}}
+
+</section>

@@ -1,27 +1,25 @@
 const registry = require('../lib/registry');
-const Case = require('case');
+const info = require('../lib/info');
+const status = require('../lib/status');
+const co = require('co');
 
 module.exports = (req, res) => {
-	const registryData = registry.getData();
+	co(function* (){
+		const registryData = registry.getData();
 
-	const app = registryData.find(d => d.name === req.params.app);
+		const app = registryData.find(d => d.name === req.params.app);
 
-	if(!app){
-		return res.sendStatus(400);
-	}
+		if(!app){
+			return res.sendStatus(400);
+		}
 
-	const viewModel = {
-		layout: 'default',
+		const viewModel = {
+			layout: 'default',
+			info: info(app),
+			metrics: {}
+		};
 
-		name: app.name,
-		title: Case.title(app.name),
-		desc: app.desc,
-		serves: app.serves.join(', '),
-		tier: app.tier,
-		repo: app.versions['1'].repo,
-		heroku: app.versions['1'].dashboard,
-		nodes: app.versions['1'].nodes
-	};
-
-	res.render('app', viewModel);
+		viewModel.status = yield status(viewModel.info);
+		res.render('app', viewModel);
+	});
 };
