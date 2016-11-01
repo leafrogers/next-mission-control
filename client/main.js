@@ -16,7 +16,8 @@ function scaleDynos(appName, direction){
 	fetch(
 		`/api/v1/scale/${appName}/${direction}`,
 		{
-			method: 'POST'
+			method: 'POST',
+			credentials: 'same-origin'
 		}
 	).then(response => {
 		if(!response.ok){
