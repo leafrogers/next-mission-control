@@ -24,7 +24,7 @@ tidy:
 deploy:
 	nht configure ft-next-mission-control ft-next-m-control-staging
 	nht configure ft-next-mission-control ft-next-m-control-eu
-	nht ship --no-configure --skip-gtg --pipeline ft-next-m-control
+	nht ship --no-configure --pipeline ft-next-m-control
 
 run:
 	nht run --local
