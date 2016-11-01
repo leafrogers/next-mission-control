@@ -2,6 +2,11 @@ const express = require('@financial-times/n-express');
 const path = require('path');
 const registry = require('./lib/registry');
 
+process.on('uncaughtException', err => {
+	console.error(err.stack);
+	process.exit(1);
+});
+
 const controllers = {
 	home: require('./controllers/home'),
 	app: require('./controllers/app'),
@@ -34,8 +39,6 @@ app.use('/:app', middleware.auth);
 app.get('/', controllers.home);
 
 app.get('/:app', controllers.app);
-
-
 
 registry.init()
 	.then(() => app.listen(PORT));
