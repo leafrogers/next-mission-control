@@ -1,6 +1,6 @@
 include n.Makefile
 
-TEST_APP := "ft-next-front-page-branch-${CIRCLE_BUILD_NUM}"
+TEST_APP := "ft-next-mcontrol-branch-${CIRCLE_BUILD_NUM}"
 
 test: verify
 
@@ -12,7 +12,7 @@ build:
 build-production:
 	mkdir -p public
 	node-sass client/main.scss public/styles.css  --output-style compressed
-	webpack --optimize-minimize
+	webpack
 	haikro build
 
 provision:
