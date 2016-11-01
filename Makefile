@@ -22,7 +22,9 @@ tidy:
 	# Not required
 
 deploy:
-	nht ship -p ft-next-m-control
+	nht configure ft-next-mission-control ft-next-m-control-staging
+	nht configure ft-next-mission-control ft-next-m-control-eu
+	nht ship --no-configure --pipieline ft-next-m-control
 
 run:
 	nht run --local
