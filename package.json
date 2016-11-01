@@ -16,6 +16,9 @@
   "bugs": {
     "url": "https://github.com/Financial-Times/next-mission-control/issues"
   },
+  "engines": {
+    "node": "6.6.0"
+  },
   "homepage": "https://github.com/Financial-Times/next-mission-control#readme",
   "dependencies": {
     "@financial-times/n-express": "^17.15.5",
