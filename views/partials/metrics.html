@@ -1,16 +1,40 @@
 
-<section class="metrics">
-	<div data-o-component="o-expander" class="o-expander" data-o-expander-shrink-to="hidden">
-	<div class="title-bar">
+<section class="metrics o-techdocs-content">
+	<div class="title-bar o-techdocs-content">
 		<h2>Metrics</h2>
-		<a href="#" class="o-expander__toggle o--if-js">Show</a>
 	</div>
-		<div class="o-expander__content">
-			<table>
-				<tbody>
 
-				</tbody>
-			</table>
-		</div>
-	</div>
+			<ul data-o-component="o-tabs" class="o-tabs o-tabs--big o-tabs--buttontabs" role="tablist">
+				{{#each nodes}}
+					<li role="tab"><a href="#appMetrics{{region}}">{{region}}</a></li>
+				{{/each}}
+			</ul>
+
+
+			{{#each nodes}}
+				<div id="appMetrics{{region}}" class="o-tabs__tabpanel o-techdocs-content">
+					<p>
+						<button class="o-buttons"><a href="{{herokuMetricsDashboardUrl}}">View metrics on Heroku</a></button>
+					</p>
+
+					{{#if metrics.errors}}
+					<h3>Errors in the last hour</h3>
+					<div class="o-techdocs-table-wrapper">
+						<table>
+							<tbody>
+							{{#each metrics.errors}}
+							<tr>
+								<th scope="row">{{#if title}}{{title}}{{else}}{{code}}{{/if}}</th>
+								<td>{{count}}</td>
+							</tr>
+							{{/each}}
+							</tbody>
+						</table>
+					</div>
+					{{else}}
+						<h3>No errors in the last hour</h3>
+					{{/if}}
+
+				</div>
+			{{/each}}
 </section>

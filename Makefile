@@ -2,7 +2,10 @@ include n.Makefile
 
 TEST_APP := "ft-next-mcontrol-branch-${CIRCLE_BUILD_NUM}"
 
-test: verify
+test: verify unit-test
+
+unit-test:
+	mocha test/*.spec.js
 
 build:
 	mkdir -p public

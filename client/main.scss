@@ -3,6 +3,10 @@ html, body {
 	padding: 0;
 }
 
+section {
+	margin-bottom: 10px;
+}
+
 .o-techdocs-hero {
 	margin: 0;
 }
@@ -11,13 +15,27 @@ html, body {
 	margin: 10px 0;
 }
 
+.title-bar {
+	margin-bottom: 10px;
+}
+
 .title-bar h2 {
-	display: inline-block;
-	width: 85%;
 	margin: 0;
 }
 
-.status li[role="tab"] a{
+table {
+	width: 100%;
+}
+
+button a {
+	text-decoration: none;
+
+	&:after {
+		content: ' →';
+	}
+}
+
+li[role="tab"] a{
 	text-transform: uppercase;
 }
 
@@ -68,4 +86,10 @@ html, body {
 	margin: 10px 0;
 	display: flex;
 	justify-content: space-around;
+}
+
+.o-tabs__tabpanel {
+	padding: 10px;
+	background-color: #fdf8f2;
+	border: 1px solid #505050;
 }
