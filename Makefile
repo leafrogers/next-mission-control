@@ -16,10 +16,10 @@ build-production:
 	haikro build
 
 provision:
-	nht float -ds --testapp ${TEST_APP}
+	nht float --testapp ${TEST_APP}
 
 tidy:
-	nht destroy ${TEST_APP}
+	# Not required
 
 deploy:
 	nht ship
