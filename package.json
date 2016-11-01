@@ -35,6 +35,7 @@
     "@financial-times/n-heroku-tools": "^6.14.5",
     "@financial-times/n-webpack": "^1.13.0",
     "babel-loader": "^6.2.7",
+    "haikro": "^2.3.3",
     "lintspaces-cli": "^0.4.0",
     "node-sass": "^3.10.1",
     "webpack": "^1.13.3"

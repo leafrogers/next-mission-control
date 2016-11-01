@@ -9,6 +9,12 @@ build:
 	node-sass client/main.scss public/styles.css  --source-map-embed
 	webpack
 
+build-production:
+	mkdir -p public
+	node-sass client/main.scss public/styles.css  --output-style compressed
+	webpack --optimize-minimize
+	haikro build
+
 provision:
 	nht float -ds --testapp ${TEST_APP}
 
