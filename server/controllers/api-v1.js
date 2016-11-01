@@ -3,6 +3,7 @@ const router = express.Router();
 const heroku = require('../lib/heroku');
 const co = require('co');
 const registry = require('../lib/registry');
+const auth = require('../middleware/api-auth');
 
 router.use((req, res, next) => {
 	const requestersOrigin = req.get('origin');
@@ -18,6 +19,8 @@ router.use((req, res, next) => {
 		next();
 	}
 });
+
+router.use(auth);
 
 router.post('/scale/:name/:direction', (req, res) => {
 	co(function* (){

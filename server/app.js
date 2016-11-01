@@ -8,6 +8,10 @@ const controllers = {
 	apiV1: require('./controllers/api-v1')
 };
 
+const middleware = {
+	auth: require('./middleware/app-auth')
+};
+
 const PORT = Number(process.env.PORT || 3002);
 
 const app = express({
@@ -22,11 +26,16 @@ app.get('/__gtg', (req, res) => {
 	res.sendStatus(200).end();
 });
 
+app.use('/api/v1', controllers.apiV1);
+
+app.use('/', middleware.auth);
+app.use('/:app', middleware.auth);
+
 app.get('/', controllers.home);
 
 app.get('/:app', controllers.app);
 
-app.use('/api/v1', controllers.apiV1);
+
 
 registry.init()
 	.then(() => app.listen(PORT));
