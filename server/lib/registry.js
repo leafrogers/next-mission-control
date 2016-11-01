@@ -18,4 +18,3 @@ function getAppData(name){
 }
 
 module.exports = {init, getData, getAppData};
-

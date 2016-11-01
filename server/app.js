@@ -30,4 +30,3 @@ app.use('/api/v1', controllers.apiV1);
 
 registry.init()
 	.then(() => app.listen(PORT));
-
