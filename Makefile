@@ -22,7 +22,7 @@ tidy:
 	# Not required
 
 deploy:
-	nht ship ft-next-m-control
+	nht ship -p ft-next-m-control
 
 run:
 	nht run --local
