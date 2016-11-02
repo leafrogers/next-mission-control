@@ -91,9 +91,9 @@ function findHighest(arr){
 }
 
 function calculateMemoryStatus(val, thresholds){
-	if(val > thresholds.error){
+	if(thresholds.error && val > thresholds.error){
 		return 'error';
-	}else if(val > thresholds.warning){
+	}else if(thresholds.warning && val > thresholds.warning){
 		return 'warning';
 	}else{
 		return 'ok';
@@ -144,4 +144,20 @@ function responseTime(appId){
 	});
 }
 
-module.exports = {errors, memory, responseTime};
+function responseStatus(appId){
+	return co(function* (){
+		const params = getParams();
+		const metrics = yield api(`/metrics/${appId}/router/status`, params);
+		const responseStatus = {rawData:metrics};
+		responseStatus.list = Object.keys(metrics.data).map(status => {
+			const val = getMetricValue(metrics.data[status], 'average', {});
+			val.code = status;
+			return val;
+		});
+		responseStatus.total = responseStatus.list.reduce((p, c) => p + c.value, 0);
+
+		return responseStatus;
+	})
+}
+
+module.exports = {errors, memory, responseTime, responseStatus};

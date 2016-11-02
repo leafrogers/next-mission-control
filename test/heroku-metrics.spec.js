@@ -6,8 +6,12 @@ describe('Heroku Metrics API Client', () => {
 
 	let metrics;
 
+	function total(arr){
+		return arr.reduce((p, c) => p+c, 0);
+	}
+
 	function average(arr){
-		return Math.floor(arr.reduce((p, c) => p+c, 0) / arr.length);
+		return Math.floor( total(arr) / arr.length);
 	}
 
 	function highest(arr){
@@ -70,6 +74,23 @@ describe('Heroku Metrics API Client', () => {
 				expect(responseTime.median.value).to.equal(expectedMedian);
 				expect(responseTime.p95.value).to.equal(expected95th);
 				expect(responseTime.p95.status).to.equal('ok');
+			});
+	});
+
+	it('Should be able to get request and reponse status metrics', () => {
+		const fixture = require('./fixtures/response-status.json');
+		fetchStub.setup(fixture);
+		return metrics.responseStatus('d057116e-e17f-42fe-be00-9cd212403652')
+			.then(responseStatus => {
+				const expectedStatuses = Object.keys(fixture.data);
+				const expectedValues = expectedStatuses.map(s => average(fixture.data[s]));
+				expect(responseStatus.rawData).to.exist;
+				expect(responseStatus.total).to.equal(total(expectedValues));
+				expectedStatuses.forEach((status, i) => {
+					const val = responseStatus.list.find(r => r.code === status);
+					expect(val).to.exist;
+					expect(val.value).to.equal(expectedValues[i]);
+				})
 			});
 	})
 

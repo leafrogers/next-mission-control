@@ -76,7 +76,29 @@
 						</table>
 					</div>
 					{{else}}
-					<h3>No response time data available</h3>
+						<h3>No response time data available</h3>
+					{{/if}}
+
+					{{#if metrics.responseStatus}}
+					<h3>Average requests per minute in the last hour</h3>
+					<div class="o-techdocs-table-wrapper">
+						<table class="metric-data">
+							<tbody>
+								<tr>
+									<th scope="row">TOTAL</th>
+									<td class="metric-data__value">{{metrics.responseStatus.total}}</td>
+								</tr>
+								{{#each metrics.responseStatus.list}}
+									<tr>
+										<th scope="row">{{code}}</th>
+										<td class="metric-data__value">{{value}}</td>
+									</tr>
+								{{/each}}
+							</tbody>
+						</table>
+					</div>
+					{{else}}
+					<h3>No response data available</h3>
 					{{/if}}
 
 				</div>
