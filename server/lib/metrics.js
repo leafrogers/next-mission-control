@@ -14,6 +14,7 @@ module.exports = function getAppMetrics(appInfo){
 				herokuMetricsDashboardUrl: `https://dashboard.heroku.com/apps/${node.name}/metrics/web?starting=24-hours-ago`
 			};
 			nodeMetrics.metrics.errors = yield herokuMetrics.errors(node.id);
+			nodeMetrics.metrics.memory = yield herokuMetrics.memory(node.id);
 			metrics.nodes.push(nodeMetrics);
 		}
 

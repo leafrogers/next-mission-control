@@ -6,6 +6,18 @@ describe('Heroku Metrics API Client', () => {
 
 	let metrics;
 
+	function average(arr){
+		return Math.floor(arr.reduce((p, c) => p+c, 0) / arr.length);
+	}
+
+	function highest(arr){
+		return Math.floor(arr.reduce((p, c) => c > p ? c : p, 0));
+	}
+
+	function percentage(number, perc){
+		Math.floor((perc / 100) * number);
+	}
+
 	before(() => {
 		metrics = proxyquire('../server/lib/heroku-metrics', {'node-fetch':fetchStub.stub});
 	});
@@ -28,5 +40,24 @@ describe('Heroku Metrics API Client', () => {
 				}
 			});
 	});
+
+	it('Should be able to get memory usage metrics', () => {
+		const fixture = require('./fixtures/memory-usage-reponse.json');
+		fetchStub.setup(fixture);
+		return metrics.memory('d057116e-e17f-42fe-be00-9cd212403652')
+			.then(memoryUsage => {
+				const expectedAverage = average(fixture.data.memory_average);
+				const expectedMax = highest(fixture.data.memory_total_max);
+				const expectedMaxRss = highest(fixture.data.memory_max_rss);
+				const quota = fixture.data.memory_quota[0];
+				const expectedThresholds = {'error' : percentage(quota, 80), 'warning': percentage(quota, 70)};
+				expect(memoryUsage.rawData).to.exist;
+				expect(memoryUsage.average.value).to.equal(expectedAverage);
+				expect(memoryUsage.max.value).to.equal(expectedMax);
+				expect(memoryUsage.maxRss.value).to.equal(expectedMaxRss);
+				expect(memoryUsage.average.status).to.equal('ok');
+			});
+	})
+
 
 });

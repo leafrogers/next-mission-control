@@ -35,6 +35,30 @@
 						<h3>No errors in the last hour</h3>
 					{{/if}}
 
+					{{#if metrics.memory}}
+						<h3>Memory usage in the last hour</h3>
+						<div class="o-techdocs-table-wrapper">
+							<table class="memory-usage-data">
+								<tbody>
+									<tr>
+										<th scope="row">AVERAGE</th>
+										<td class="memory-usage-data__value memory-usage-data__value--{{metrics.memory.average.status}}">{{metrics.memory.average.value}}MB</td>
+									</tr>
+									<tr>
+										<th scope="row">MAX</th>
+										<td class="memory-usage-data__value memory-usage-data__value--{{metrics.memory.max.status}}">{{metrics.memory.max.value}}MB</td>
+									</tr>
+									<tr>
+										<th scope="row">MAX RSS</th>
+										<td class="memory-usage-data__value memory-usage-data__value--{{metrics.memory.maxRss.status}}">{{metrics.memory.maxRss.value}}MB</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					{{else}}
+						<h3>No memory usage data available</h3>
+					{{/if}}
+
 				</div>
 			{{/each}}
 </section>

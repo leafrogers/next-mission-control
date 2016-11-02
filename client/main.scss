@@ -93,3 +93,15 @@ li[role="tab"] a{
 	background-color: #fdf8f2;
 	border: 1px solid #505050;
 }
+
+.memory-usage-data .memory-usage-data__value--ok {
+	color:#458b00
+}
+
+.memory-usage-data .memory-usage-data__value--warning {
+	color:#d66d06;
+}
+
+.memory-usage-data .memory-usage-data__value--error {
+	color:#cc0000;
+}

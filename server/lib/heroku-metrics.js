@@ -60,9 +60,13 @@ function getDateParams(window){
 	}
 }
 
+function getParams(){
+	return Object.assign({}, getDateParams(), {'step':'10m'});
+}
+
 function errors(appId){
 	return co(function* (){
-		const params = Object.assign({}, getDateParams(), {'step':'10m'});
+		const params = getParams();
 		const metrics = yield api(`/metrics/${appId}/router/errors`, params);
 		return Object.keys(metrics.data).map(code => {
 			const error = {code};
@@ -78,4 +82,55 @@ function errors(appId){
 	})
 }
 
-module.exports = {errors};
+function calculateAverage(arr){
+	return Math.floor(arr.reduce((p, c) => p + c, 0) / arr.length);
+}
+
+function findHighest(arr){
+	return Math.floor(arr.reduce((p, c) => c > p ? c : p, 0));
+}
+
+function calculateMemoryStatus(val, thresholds){
+	if(val > thresholds.error){
+		return 'error';
+	}else if(val > thresholds.warning){
+		return 'warning';
+	}else{
+		return 'ok';
+	}
+}
+
+function getMemoryValue(arr, type, thresholds){
+	let val;
+	if(type === 'average'){
+		val = calculateAverage(arr)
+	}else if(type === 'highest'){
+		val = findHighest(arr);
+	}
+
+	return {value:val, status:calculateMemoryStatus(val, thresholds)}
+}
+
+function calculateThresholds(data){
+	// if usages is 80% of available show warning, over 90% show as error
+	const quota = data.data.memory_quota[0];
+	return {
+		'error': (90 / 100) * quota,
+		'warning': (80 / 100) * quota
+	}
+}
+
+function memory(appId){
+	return co(function* (){
+		const params  = getParams();
+		const metrics = yield api(`/metrics/${appId}/dyno/memory`, params);
+		const memoryUsage = {rawData:metrics};
+		const thresholds = calculateThresholds(metrics);
+		memoryUsage.average = getMemoryValue(metrics.data.memory_average, 'average', thresholds);
+		memoryUsage.max = getMemoryValue(metrics.data.memory_total_max, 'highest', thresholds);
+		memoryUsage.maxRss = getMemoryValue(metrics.data.memory_max_rss, 'highest', thresholds);
+		return memoryUsage;
+	})
+}
+
+module.exports = {errors, memory};
