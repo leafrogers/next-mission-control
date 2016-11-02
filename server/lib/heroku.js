@@ -52,7 +52,6 @@ function getCurrentFormation(appId){
 		const {size, quantity} = formation.find(f => f.type === 'web');
 		return {size, quantity};
 	});
-
 }
 
 module.exports = {getAppInfo, scale, getCurrentFormation};

@@ -20,19 +20,21 @@
 
 	{{#each nodes}}
 		<div id="appRegion{{region}}" class="o-tabs__tabpanel">
-			<table class="status__node-status">
-				<tr>
-					<td colspan="2">{{url}}</td>
-				</tr>
-				<tr>
-					<th scope="row"><a href="{{url}}/__gtg">GTG</a></th>
-					<td class="{{#if up}}status--up{{else}}status--down{{/if}}">{{#if up}}UP{{else}}DOWN{{/if}}</td>
-				</tr>
-				<tr>
-					<th scope="row"><a href="{{url}}/__health">HEALTH</a></th>
-					<td class="{{#if health.overall}}status--up{{else}}status--down{{/if}}">{{health.statusText}}</td>
-				</tr>
-			</table>
+			<div class="o-techdocs-table-wrapper">
+				<table class="status__node-status">
+					<tr>
+						<td colspan="2">{{url}}</td>
+					</tr>
+					<tr>
+						<th scope="row"><a href="{{url}}/__gtg">GTG</a></th>
+						<td class="{{#if up}}status--up{{else}}status--down{{/if}}">{{#if up}}UP{{else}}DOWN{{/if}}</td>
+					</tr>
+					<tr>
+						<th scope="row"><a href="{{url}}/__health">HEALTH</a></th>
+						<td class="{{#if health.overall}}status--up{{else}}status--down{{/if}}">{{health.statusText}}</td>
+					</tr>
+				</table>
+			</div>
 
 			<div class="status__node-actions">
 				<button class="o-buttons" id="js-node-scale-down" data-app-id="{{name}}">Scale Down &darr;</button>

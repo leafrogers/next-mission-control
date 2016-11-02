@@ -17,8 +17,8 @@ module.exports = function getAppInfo(app){
 
 		for(node of info.nodes){
 			const herokuInfo = yield heroku.getAppInfo(node.url.replace(/https?:\/\//, '').replace('.herokuapp.com', ''));
-			console.log(herokuInfo);
 			node.id = herokuInfo.id;
+			node.name = herokuInfo.name;
 		}
 
 		return info;

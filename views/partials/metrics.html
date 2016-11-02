@@ -1,16 +1,126 @@
 
-<section class="metrics">
-	<div data-o-component="o-expander" class="o-expander" data-o-expander-shrink-to="hidden">
-	<div class="title-bar">
+<section class="metrics o-techdocs-content">
+	<div class="title-bar o-techdocs-content">
 		<h2>Metrics</h2>
-		<a href="#" class="o-expander__toggle o--if-js">Show</a>
 	</div>
-		<div class="o-expander__content">
-			<table>
-				<tbody>
 
-				</tbody>
-			</table>
-		</div>
-	</div>
+			<ul data-o-component="o-tabs" class="o-tabs o-tabs--big o-tabs--buttontabs" role="tablist">
+				{{#each nodes}}
+					<li role="tab"><a href="#appMetrics{{region}}">{{region}}</a></li>
+				{{/each}}
+			</ul>
+
+
+			{{#each nodes}}
+				<div id="appMetrics{{region}}" class="o-tabs__tabpanel o-techdocs-content">
+					<p>
+						<button class="o-buttons"><a href="{{herokuMetricsDashboardUrl}}">View metrics on Heroku</a></button>
+					</p>
+
+					{{#if metrics.errors}}
+					<h3>Errors in the last hour</h3>
+					<div class="o-techdocs-table-wrapper">
+						<table>
+							<tbody>
+							{{#each metrics.errors}}
+							<tr>
+								<th scope="row">{{#if title}}{{title}}{{else}}{{code}}{{/if}}</th>
+								<td>{{count}}</td>
+							</tr>
+							{{/each}}
+							</tbody>
+						</table>
+					</div>
+					{{else}}
+						<h3>No errors in the last hour</h3>
+					{{/if}}
+
+					{{#if metrics.memory}}
+						<h3>Memory usage in the last hour</h3>
+						<div class="o-techdocs-table-wrapper">
+							<table class="metric-data">
+								<tbody>
+									<tr>
+										<th scope="row">AVERAGE</th>
+										<td class="metric-data__value metric-data__value--{{metrics.memory.average.status}}">{{metrics.memory.average.value}}MB</td>
+									</tr>
+									<tr>
+										<th scope="row">MAX</th>
+										<td class="metric-data__value metric-data__value--{{metrics.memory.max.status}}">{{metrics.memory.max.value}}MB</td>
+									</tr>
+									<tr>
+										<th scope="row">MAX RSS</th>
+										<td class="metric-data__value metric-data__value--{{metrics.memory.maxRss.status}}">{{metrics.memory.maxRss.value}}MB</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					{{else}}
+						<h3>No memory usage data available</h3>
+					{{/if}}
+
+					{{#if metrics.responseTime}}
+					<h3>Response times in the last hour</h3>
+					<div class="o-techdocs-table-wrapper">
+						<table class="metric-data">
+							<tbody>
+							<tr>
+								<th scope="row">MEDIAN</th>
+								<td class="metric-data__value metric-data__value--{{metrics.responseTime.median.status}}">{{metrics.responseTime.median.value}}ms</td>
+							</tr>
+							<tr>
+								<th scope="row">95th PERCENTILE</th>
+								<td class="metric-data__value metric-data__value--{{metrics.responseTime.p95.status}}">{{metrics.responseTime.p95.value}}ms</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					{{else}}
+						<h3>No response time data available</h3>
+					{{/if}}
+
+					{{#if metrics.responseStatus}}
+					<h3>Average requests per minute in the last hour</h3>
+					<div class="o-techdocs-table-wrapper">
+						<table class="metric-data">
+							<tbody>
+								<tr>
+									<th scope="row">TOTAL</th>
+									<td class="metric-data__value">{{metrics.responseStatus.total}}</td>
+								</tr>
+								{{#each metrics.responseStatus.list}}
+									<tr>
+										<th scope="row">{{code}}</th>
+										<td class="metric-data__value">{{value}}</td>
+									</tr>
+								{{/each}}
+							</tbody>
+						</table>
+					</div>
+					{{else}}
+					<h3>No response data available</h3>
+					{{/if}}
+
+					{{#if metrics.load}}
+					<h3>Average load in the last hour</h3>
+					<div class="o-techdocs-table-wrapper">
+						<table class="metric-data">
+							<tbody>
+								<tr>
+									<th scope="row">MEAN</th>
+									<td class="metric-data__value">{{metrics.load.mean.value}}</td>
+								</tr>
+								<tr>
+									<th scope="row">MAX</th>
+									<td class="metric-data__value">{{metrics.load.max.value}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					{{else}}
+					<h3>No load data available</h3>
+					{{/if}}
+
+				</div>
+			{{/each}}
 </section>

@@ -1,6 +1,7 @@
 const registry = require('../lib/registry');
 const info = require('../lib/info');
 const status = require('../lib/status');
+const metrics = require('../lib/metrics');
 const co = require('co');
 
 module.exports = (req, res) => {
@@ -13,11 +14,11 @@ module.exports = (req, res) => {
 
 		const viewModel = {
 			layout: 'default',
-			metrics: {}
 		};
 
 		viewModel.info = yield info(app);
-		viewModel.status = yield status(viewModel.info);
+		viewModel.metrics = yield metrics(viewModel.info);
+		viewModel.status = yield status(viewModel.info, viewModel.metrics);
 		res.render('app', viewModel);
 	});
 };
