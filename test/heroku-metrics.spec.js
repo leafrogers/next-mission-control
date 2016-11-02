@@ -57,6 +57,20 @@ describe('Heroku Metrics API Client', () => {
 				expect(memoryUsage.maxRss.value).to.equal(expectedMaxRss);
 				expect(memoryUsage.average.status).to.equal('ok');
 			});
+	});
+
+	it('Should be able to get response time metrics', () => {
+		const fixture = require('./fixtures/response-time.json');
+		fetchStub.setup(fixture);
+		return metrics.responseTime('d057116e-e17f-42fe-be00-9cd212403652')
+			.then(responseTime => {
+				const expectedMedian = average(fixture.data.latency_p50);
+				const expected95th = average(fixture.data.latency_p95);
+				expect(responseTime.rawData).to.exist;
+				expect(responseTime.median.value).to.equal(expectedMedian);
+				expect(responseTime.p95.value).to.equal(expected95th);
+				expect(responseTime.p95.status).to.equal('ok');
+			});
 	})
 
 

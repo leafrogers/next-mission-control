@@ -15,6 +15,7 @@ module.exports = function getAppMetrics(appInfo){
 			};
 			nodeMetrics.metrics.errors = yield herokuMetrics.errors(node.id);
 			nodeMetrics.metrics.memory = yield herokuMetrics.memory(node.id);
+			nodeMetrics.metrics.responseTime = yield herokuMetrics.responseTime(node.id);
 			metrics.nodes.push(nodeMetrics);
 		}
 

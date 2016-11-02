@@ -100,7 +100,7 @@ function calculateMemoryStatus(val, thresholds){
 	}
 }
 
-function getMemoryValue(arr, type, thresholds){
+function getMetricValue(arr, type, thresholds){
 	let val;
 	if(type === 'average'){
 		val = calculateAverage(arr)
@@ -111,9 +111,8 @@ function getMemoryValue(arr, type, thresholds){
 	return {value:val, status:calculateMemoryStatus(val, thresholds)}
 }
 
-function calculateThresholds(data){
+function calculateThresholds(quota){
 	// if usages is 80% of available show warning, over 90% show as error
-	const quota = data.data.memory_quota[0];
 	return {
 		'error': (90 / 100) * quota,
 		'warning': (80 / 100) * quota
@@ -125,12 +124,24 @@ function memory(appId){
 		const params  = getParams();
 		const metrics = yield api(`/metrics/${appId}/dyno/memory`, params);
 		const memoryUsage = {rawData:metrics};
-		const thresholds = calculateThresholds(metrics);
-		memoryUsage.average = getMemoryValue(metrics.data.memory_average, 'average', thresholds);
-		memoryUsage.max = getMemoryValue(metrics.data.memory_total_max, 'highest', thresholds);
-		memoryUsage.maxRss = getMemoryValue(metrics.data.memory_max_rss, 'highest', thresholds);
+		const thresholds = calculateThresholds(metrics.data.memory_quota[0]);
+		memoryUsage.average = getMetricValue(metrics.data.memory_average, 'average', thresholds);
+		memoryUsage.max = getMetricValue(metrics.data.memory_total_max, 'highest', thresholds);
+		memoryUsage.maxRss = getMetricValue(metrics.data.memory_max_rss, 'highest', thresholds);
 		return memoryUsage;
 	})
 }
 
-module.exports = {errors, memory};
+function responseTime(appId){
+	return co(function* (){
+		const params = getParams();
+		const metrics = yield api(`/metrics/${appId}/router/latency`, params);
+		const responseTimes = {rawData:metrics};
+		const thresholds = calculateThresholds(1000);
+		responseTimes.median = getMetricValue(metrics.data.latency_p50, 'average', thresholds);
+		responseTimes.p95 = getMetricValue(metrics.data.latency_p95, 'average', thresholds);
+		return responseTimes;
+	});
+}
+
+module.exports = {errors, memory, responseTime};

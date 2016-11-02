@@ -38,25 +38,45 @@
 					{{#if metrics.memory}}
 						<h3>Memory usage in the last hour</h3>
 						<div class="o-techdocs-table-wrapper">
-							<table class="memory-usage-data">
+							<table class="metric-data">
 								<tbody>
 									<tr>
 										<th scope="row">AVERAGE</th>
-										<td class="memory-usage-data__value memory-usage-data__value--{{metrics.memory.average.status}}">{{metrics.memory.average.value}}MB</td>
+										<td class="metric-data__value metric-data__value--{{metrics.memory.average.status}}">{{metrics.memory.average.value}}MB</td>
 									</tr>
 									<tr>
 										<th scope="row">MAX</th>
-										<td class="memory-usage-data__value memory-usage-data__value--{{metrics.memory.max.status}}">{{metrics.memory.max.value}}MB</td>
+										<td class="metric-data__value metric-data__value--{{metrics.memory.max.status}}">{{metrics.memory.max.value}}MB</td>
 									</tr>
 									<tr>
 										<th scope="row">MAX RSS</th>
-										<td class="memory-usage-data__value memory-usage-data__value--{{metrics.memory.maxRss.status}}">{{metrics.memory.maxRss.value}}MB</td>
+										<td class="metric-data__value metric-data__value--{{metrics.memory.maxRss.status}}">{{metrics.memory.maxRss.value}}MB</td>
 									</tr>
 								</tbody>
 							</table>
 						</div>
 					{{else}}
 						<h3>No memory usage data available</h3>
+					{{/if}}
+
+					{{#if metrics.responseTime}}
+					<h3>Response times in the last hour</h3>
+					<div class="o-techdocs-table-wrapper">
+						<table class="metric-data">
+							<tbody>
+							<tr>
+								<th scope="row">MEDIAN</th>
+								<td class="metric-data__value metric-data__value--{{metrics.responseTime.median.status}}">{{metrics.responseTime.median.value}}ms</td>
+							</tr>
+							<tr>
+								<th scope="row">95th PERCENTILE</th>
+								<td class="metric-data__value metric-data__value--{{metrics.responseTime.p95.status}}">{{metrics.responseTime.p95.value}}ms</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					{{else}}
+					<h3>No response time data available</h3>
 					{{/if}}
 
 				</div>

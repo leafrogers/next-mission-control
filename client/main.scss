@@ -94,14 +94,14 @@ li[role="tab"] a{
 	border: 1px solid #505050;
 }
 
-.memory-usage-data .memory-usage-data__value--ok {
+.metric-data .metric-data__value--ok {
 	color:#458b00
 }
 
-.memory-usage-data .memory-usage-data__value--warning {
+.metric-data .metric-data__value--warning {
 	color:#d66d06;
 }
 
-.memory-usage-data .memory-usage-data__value--error {
+.metric-data .metric-data__value--error {
 	color:#cc0000;
 }
