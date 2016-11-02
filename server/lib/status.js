@@ -1,9 +1,10 @@
 const ping = require('./ping');
 const co = require('co');
 const debug = require('debug')('status');
+const Case = require('case');
 
 
-function getNodeStatus(node){
+function getNodeStatus(node, info){
 	debug('getNodeStatus', node.url);
 	return co(function* (){
 		const status = {
@@ -24,6 +25,11 @@ function getNodeStatus(node){
 			}
 		}
 
+		status.scale = {
+			initial: {size: Case.capital(info.formation.web.size), quantity: info.formation.web.scale},
+			current: node.currentFormation
+		};
+
 		debug('status', status);
 		return status;
 	}).catch(err => console.error(err.stack));
@@ -34,7 +40,7 @@ module.exports = function getAppStatus(info){
 		const status = {nodes: []};
 		debug('getAppStatus', info);
 		for(let node of info.nodes){
-			const nodeStatus = yield getNodeStatus(node);
+			const nodeStatus = yield getNodeStatus(node, info);
 			status.nodes.push(nodeStatus);
 		}
 

@@ -158,7 +158,7 @@ function responseStatus(appId){
 			val.code = status;
 			return val;
 		});
-		responseStatus.list.sort((a, b) => a.value > b.value);
+		responseStatus.list.sort((a, b) => b.value - a.value);
 		responseStatus.total = responseStatus.list.reduce((p, c) => p + c.value, 0);
 
 		return responseStatus;
