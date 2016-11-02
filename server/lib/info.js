@@ -12,13 +12,15 @@ module.exports = function getAppInfo(app){
 			tier: app.tier,
 			repo: app.versions['1'].repo,
 			heroku: app.versions['1'].dashboard,
-			nodes: app.versions['1'].nodes
+			nodes: app.versions['1'].nodes,
+			formation: app.versions['1'].processes
 		};
 
 		for(node of info.nodes){
 			const herokuInfo = yield heroku.getAppInfo(node.url.replace(/https?:\/\//, '').replace('.herokuapp.com', ''));
 			node.id = herokuInfo.id;
 			node.name = herokuInfo.name;
+			node.currentFormation = yield heroku.getCurrentFormation(node.id);
 		}
 
 		return info;

@@ -5,6 +5,13 @@ const co = require('co');
 const registry = require('../lib/registry');
 const auth = require('../middleware/api-auth');
 
+const DYNO_TYPES = [
+	'standard-1x',
+	'standard-2x',
+	'performance-m',
+	'performance-l'
+];
+
 router.use((req, res, next) => {
 	const requestersOrigin = req.get('origin');
 	const isCorsRequest = requestersOrigin && /^(https?:\/\/)?((([^.]+)\.)*)ft\.com(:[0-9]{1,4})?$/.test(requestersOrigin);
@@ -22,7 +29,7 @@ router.use((req, res, next) => {
 
 router.use(auth);
 
-router.post('/scale/:name/:direction', (req, res) => {
+router.post('/horizontal-scale/:direction/:name', (req, res) => {
 	co(function* (){
 		const appId = req.params.name;
 		const currentFormation = yield heroku.getCurrentFormation(appId);
@@ -35,7 +42,56 @@ router.post('/scale/:name/:direction', (req, res) => {
 		}
 
 		yield heroku.scale(appId, quantity, size);
-		res.sendStatus(200);
+		const newFormation = yield heroku.getCurrentFormation(appId);
+		res.json({
+			action: 'FORMATION_UPDATE',
+			newFormation
+		});
+
+	}).catch(err => {
+		console.error(err.stack);
+		res.sendStatus(500)
+	})
+});
+
+router.post('/vertical-scale/:direction/:name', (req, res) => {
+	co(function* (){
+		const appId = req.params.name;
+		const currentFormation = yield heroku.getCurrentFormation(appId);
+		const size = currentFormation.size;
+		let quantity = currentFormation.quantity;
+		const currentSizeIndex = DYNO_TYPES.indexOf(size.toLowerCase());
+		if(currentSizeIndex === -1){
+			throw new Error('Invalid size: ' + size);
+		}
+
+		let newSizeIndex;
+		if(req.params.direction === 'up'){
+			newSizeIndex = currentSizeIndex+1;
+			if(newSizeIndex >= DYNO_TYPES.length){
+				return res.json({
+					action: 'ALERT',
+					message: 'You are already using the biggest dyno type'
+				})
+			}
+		}else if(req.params.direction === 'down'){
+			newSizeIndex = currentSizeIndex-1;
+			if(newSizeIndex < 0){
+				return res.json({
+					action: 'ALERT',
+					message: 'You are already using the smallest dyno type'
+				})
+			}
+		}
+
+		const newSize = DYNO_TYPES[newSizeIndex];
+
+		yield heroku.scale(appId, quantity, newSize);
+		const newFormation = yield heroku.getCurrentFormation(appId);
+		res.json({
+			action: 'FORMATION_UPDATE',
+			newFormation
+		});
 
 	}).catch(err => {
 		console.error(err.stack);

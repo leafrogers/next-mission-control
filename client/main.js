@@ -1,51 +1,55 @@
+const LOADER_VISIBLE_CLASS = 'loading--visible';
+
 function $$(selector){
 	return [].slice.apply(document.querySelectorAll(selector));
 }
 
-
-function scaleDynos(appName, direction){
-	const buttons = $$('.status__node-actions button');
-	buttons.forEach(button => {
-		button.disabled = true;
-	});
-	const after = () => {
-		buttons.forEach(button => {
-			button.disabled = false;
-		});
-	};
-	fetch(
-		`/api/v1/scale/${appName}/${direction}`,
-		{
-			method: 'POST',
-			credentials: 'same-origin'
-		}
-	).then(response => {
-		if(!response.ok){
-			alert('Failed to scale dynos');
-		}else{
-			alert('Dynos scaled.  The registry has not been updated so this action will be undone on the next deploy');
-		}
-
-		after();
-	}).catch(err => {
-		alert(err.message);
-		after();
-	});
+function updateFormation(newformation){
+	document.getElementById('js-current-scale-size').innerText = newformation.size;
+	document.getElementById('js-current-scale-quantity').innerText = newformation.quantity;
 }
 
-function onScaleUpClick(e){
-	const appName = e.target.dataset.appId;
-	scaleDynos(appName, 'up');
+function handleApiResponse(data){
+	console.log(data);
+	switch(data.action){
+		case 'ALERT' :
+			alert(data.message);
+			break;
+		case 'FORMATION_UPDATE':
+			return updateFormation(data.newFormation);
+	}
 }
 
-function onScaleDownClick(e){
-	const appName = e.target.dataset.appId;
-	scaleDynos(appName, 'down');
+
+function doApiAction(button){
+	const url = '/api/v1' + button.dataset.action;
+	const method = button.dataset.method || 'GET';
+	const loader = document.querySelector('.loading');
+	const showLoader = () => loader.classList.add(LOADER_VISIBLE_CLASS);
+	const hideLoader = () => loader.classList.remove(LOADER_VISIBLE_CLASS);
+	button.blur();
+	showLoader();
+	fetch(url, {method, credentials:'include'})
+		.then(response => {
+			if(!response.ok){
+				console.error('API Request failed', {status:response.status, url, method});
+				hideLoader();
+			}else{
+				return response.json();
+			}
+		})
+		.then(json => {
+			handleApiResponse(json);
+			hideLoader();
+		})
+		.catch(err => {
+			console.error(err);
+			hideLoader();
+		})
 }
 
 function init(){
-	document.getElementById('js-node-scale-down').addEventListener('click', onScaleDownClick);
-	document.getElementById('js-node-scale-up').addEventListener('click', onScaleUpClick);
+	$$('.js-api').forEach(button =>button.addEventListener('click', doApiAction.bind(null, button)))
 }
 
 init();

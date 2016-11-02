@@ -36,10 +36,34 @@
 				</table>
 			</div>
 
-			<div class="status__node-actions">
-				<button class="o-buttons" id="js-node-scale-down" data-app-id="{{name}}">Scale Down &darr;</button>
-				<button class="o-buttons" id="js-node-scale-up" data-app-id="{{name}}">Scale Up &uarr;</button>
+			<h3>Scaling</h3>
+			<div class="o-techdocs-table-wrapper">
+				<table>
+					<tr>
+						<th scope="row">Initial Scale *</th>
+						<td>{{scale.initial.quantity}} X {{scale.initial.size}}</td>
+					</tr>
+				</table>
+
+				<table>
+					<tr>
+						<th colspan="4">Current Scale</th>
+					</tr>
+					<tr>
+						<th scope="row">Size</th>
+						<td id="js-current-scale-size">{{scale.current.size}}</td>
+						<td><button class="o-buttons js-api action--scale-up" data-method="POST" data-action="/vertical-scale/up/{{name}}">Bigger Dynos</button></td>
+						<td><button class="o-buttons js-api action--scale-down" data-method="POST" data-action="/vertical-scale/down/{{name}}">Smaller Dynos</button></td>
+					</tr>
+					<tr>
+						<th scope="row">Quantity</th>
+						<td id="js-current-scale-quantity">{{scale.current.quantity}}</td>
+						<td><button class="o-buttons js-api action--scale-up" data-method="POST" data-action="/horizontal-scale/up/{{name}}">More Dynos</button></td>
+						<td><button class="o-buttons js-api action--scale-down" data-method="POST" data-action="/horizontal-scale/down/{{name}}">Less Dynos</button></td>
+					</tr>
+				</table>
 			</div>
+
 		</div>
 	{{/each}}
 

@@ -105,3 +105,27 @@ li[role="tab"] a{
 .metric-data .metric-data__value--error {
 	color:#cc0000;
 }
+
+.action--scale-up:after {
+	content: ' ↑';
+}
+
+.action--scale-down:after {
+	content: ' ↓';
+}
+
+.loading {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: rgba(0,0,0,0.7);
+	align-items: center;
+	justify-content: center;
+	display: none;
+}
+
+.loading--visible {
+	display: flex;
+}
