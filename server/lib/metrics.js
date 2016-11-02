@@ -17,6 +17,7 @@ module.exports = function getAppMetrics(appInfo){
 			nodeMetrics.metrics.memory = yield herokuMetrics.memory(node.id);
 			nodeMetrics.metrics.responseTime = yield herokuMetrics.responseTime(node.id);
 			nodeMetrics.metrics.responseStatus = yield herokuMetrics.responseStatus(node.id);
+			nodeMetrics.metrics.load = yield herokuMetrics.load(node.id);
 			metrics.nodes.push(nodeMetrics);
 		}
 

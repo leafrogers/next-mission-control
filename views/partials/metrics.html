@@ -101,6 +101,26 @@
 					<h3>No response data available</h3>
 					{{/if}}
 
+					{{#if metrics.load}}
+					<h3>Average load in the last hour</h3>
+					<div class="o-techdocs-table-wrapper">
+						<table class="metric-data">
+							<tbody>
+								<tr>
+									<th scope="row">MEAN</th>
+									<td class="metric-data__value">{{metrics.load.mean.value}}</td>
+								</tr>
+								<tr>
+									<th scope="row">MAX</th>
+									<td class="metric-data__value">{{metrics.load.max.value}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					{{else}}
+					<h3>No load data available</h3>
+					{{/if}}
+
 				</div>
 			{{/each}}
 </section>

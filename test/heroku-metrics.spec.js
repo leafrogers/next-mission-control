@@ -11,11 +11,11 @@ describe('Heroku Metrics API Client', () => {
 	}
 
 	function average(arr){
-		return Math.floor( total(arr) / arr.length);
+		return total(arr) / arr.length;
 	}
 
 	function highest(arr){
-		return Math.floor(arr.reduce((p, c) => c > p ? c : p, 0));
+		return arr.reduce((p, c) => c > p ? c : p, 0);
 	}
 
 	function percentage(number, perc){
@@ -50,9 +50,9 @@ describe('Heroku Metrics API Client', () => {
 		fetchStub.setup(fixture);
 		return metrics.memory('d057116e-e17f-42fe-be00-9cd212403652')
 			.then(memoryUsage => {
-				const expectedAverage = average(fixture.data.memory_average);
-				const expectedMax = highest(fixture.data.memory_total_max);
-				const expectedMaxRss = highest(fixture.data.memory_max_rss);
+				const expectedAverage = Math.round(average(fixture.data.memory_average));
+				const expectedMax = Math.ceil(highest(fixture.data.memory_total_max));
+				const expectedMaxRss = Math.ceil(highest(fixture.data.memory_max_rss));
 				const quota = fixture.data.memory_quota[0];
 				const expectedThresholds = {'error' : percentage(quota, 80), 'warning': percentage(quota, 70)};
 				expect(memoryUsage.rawData).to.exist;
@@ -68,8 +68,8 @@ describe('Heroku Metrics API Client', () => {
 		fetchStub.setup(fixture);
 		return metrics.responseTime('d057116e-e17f-42fe-be00-9cd212403652')
 			.then(responseTime => {
-				const expectedMedian = average(fixture.data.latency_p50);
-				const expected95th = average(fixture.data.latency_p95);
+				const expectedMedian = Math.round(average(fixture.data.latency_p50));
+				const expected95th = Math.round(average(fixture.data.latency_p95));
 				expect(responseTime.rawData).to.exist;
 				expect(responseTime.median.value).to.equal(expectedMedian);
 				expect(responseTime.p95.value).to.equal(expected95th);
@@ -83,7 +83,7 @@ describe('Heroku Metrics API Client', () => {
 		return metrics.responseStatus('d057116e-e17f-42fe-be00-9cd212403652')
 			.then(responseStatus => {
 				const expectedStatuses = Object.keys(fixture.data);
-				const expectedValues = expectedStatuses.map(s => average(fixture.data[s]));
+				const expectedValues = expectedStatuses.map(s => Math.round(average(fixture.data[s])));
 				expect(responseStatus.rawData).to.exist;
 				expect(responseStatus.total).to.equal(total(expectedValues));
 				expectedStatuses.forEach((status, i) => {
@@ -91,6 +91,19 @@ describe('Heroku Metrics API Client', () => {
 					expect(val).to.exist;
 					expect(val.value).to.equal(expectedValues[i]);
 				})
+			});
+	});
+
+	it('Should be able to get dyno load metrics', () => {
+		const fixture = require('./fixtures/dyno-load-reponse.json');
+		fetchStub.setup(fixture);
+		return metrics.load('d057116e-e17f-42fe-be00-9cd212403652')
+			.then(load => {
+				const expectedMean = average(fixture.data.load_mean);
+				const expectedMax = highest(fixture.data.load_max);
+				expect(load.rawData).to.exist;
+				expect(load.mean.value).to.equal(expectedMean);
+				expect(load.max.value).to.equal(expectedMax);
 			});
 	})
 

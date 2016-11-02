@@ -83,11 +83,11 @@ function errors(appId){
 }
 
 function calculateAverage(arr){
-	return Math.floor(arr.reduce((p, c) => p + c, 0) / arr.length);
+	return arr.reduce((p, c) => p + c, 0) / arr.length;
 }
 
 function findHighest(arr){
-	return Math.floor(arr.reduce((p, c) => c > p ? c : p, 0));
+	return arr.reduce((p, c) => c > p ? c : p, 0);
 }
 
 function calculateMemoryStatus(val, thresholds){
@@ -100,12 +100,16 @@ function calculateMemoryStatus(val, thresholds){
 	}
 }
 
-function getMetricValue(arr, type, thresholds){
+function getMetricValue(arr, type, thresholds, normalize){
 	let val;
 	if(type === 'average'){
 		val = calculateAverage(arr)
 	}else if(type === 'highest'){
 		val = findHighest(arr);
+	}
+
+	if(normalize){
+		val = Math[normalize](val);
 	}
 
 	return {value:val, status:calculateMemoryStatus(val, thresholds)}
@@ -125,9 +129,9 @@ function memory(appId){
 		const metrics = yield api(`/metrics/${appId}/dyno/memory`, params);
 		const memoryUsage = {rawData:metrics};
 		const thresholds = calculateThresholds(metrics.data.memory_quota[0]);
-		memoryUsage.average = getMetricValue(metrics.data.memory_average, 'average', thresholds);
-		memoryUsage.max = getMetricValue(metrics.data.memory_total_max, 'highest', thresholds);
-		memoryUsage.maxRss = getMetricValue(metrics.data.memory_max_rss, 'highest', thresholds);
+		memoryUsage.average = getMetricValue(metrics.data.memory_average, 'average', thresholds, 'round');
+		memoryUsage.max = getMetricValue(metrics.data.memory_total_max, 'highest', thresholds, 'ceil');
+		memoryUsage.maxRss = getMetricValue(metrics.data.memory_max_rss, 'highest', thresholds, 'ceil');
 		return memoryUsage;
 	})
 }
@@ -138,8 +142,8 @@ function responseTime(appId){
 		const metrics = yield api(`/metrics/${appId}/router/latency`, params);
 		const responseTimes = {rawData:metrics};
 		const thresholds = calculateThresholds(1000);
-		responseTimes.median = getMetricValue(metrics.data.latency_p50, 'average', thresholds);
-		responseTimes.p95 = getMetricValue(metrics.data.latency_p95, 'average', thresholds);
+		responseTimes.median = getMetricValue(metrics.data.latency_p50, 'average', thresholds, 'round');
+		responseTimes.p95 = getMetricValue(metrics.data.latency_p95, 'average', thresholds, 'round');
 		return responseTimes;
 	});
 }
@@ -150,14 +154,27 @@ function responseStatus(appId){
 		const metrics = yield api(`/metrics/${appId}/router/status`, params);
 		const responseStatus = {rawData:metrics};
 		responseStatus.list = Object.keys(metrics.data).map(status => {
-			const val = getMetricValue(metrics.data[status], 'average', {});
+			const val = getMetricValue(metrics.data[status], 'average', {}, 'round');
 			val.code = status;
 			return val;
 		});
+		responseStatus.list.sort((a, b) => a.value > b.value);
 		responseStatus.total = responseStatus.list.reduce((p, c) => p + c.value, 0);
 
 		return responseStatus;
 	})
 }
 
-module.exports = {errors, memory, responseTime, responseStatus};
+function load(appId){
+	return co(function* (){
+		const params = getParams();
+		const metrics = yield api(`/metrics/${appId}/dyno/load`, params);
+		const load = {rawData:metrics};
+		load.mean = getMetricValue(metrics.data.load_mean, 'average', {});
+		load.max = getMetricValue(metrics.data.load_max, 'highest', {});
+
+		return load;
+	})
+}
+
+module.exports = {errors, memory, responseTime, responseStatus, load};
