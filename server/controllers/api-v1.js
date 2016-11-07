@@ -4,6 +4,9 @@ const heroku = require('../lib/heroku');
 const co = require('co');
 const registry = require('../lib/registry');
 const auth = require('../middleware/api-auth');
+const info = require('../lib/info');
+const metrics = require('../lib/metrics');
+const status = require('../lib/status');
 
 const DYNO_TYPES = [
 	'standard-1x',
@@ -12,20 +15,20 @@ const DYNO_TYPES = [
 	'performance-l'
 ];
 
-router.use((req, res, next) => {
-	const requestersOrigin = req.get('origin');
-	const isCorsRequest = requestersOrigin && /^(https?:\/\/)?((([^.]+)\.)*)ft\.com(:[0-9]{1,4})?$/.test(requestersOrigin);
-
-	if(!isCorsRequest){
-		return res.send(403);
-	}
-
-	if(isCorsRequest && req.method === 'OPTIONS') {
-		res.send(200);
-	} else {
-		next();
-	}
-});
+// router.use((req, res, next) => {
+// 	const requestersOrigin = req.get('origin');
+// 	const isCorsRequest = requestersOrigin && /^(https?:\/\/)?((([^.]+)\.)*)ft\.com(:[0-9]{1,4})?$/.test(requestersOrigin);
+//
+// 	if(!isCorsRequest){
+// 		return res.send(403);
+// 	}
+//
+// 	if(isCorsRequest && req.method === 'OPTIONS') {
+// 		res.send(200);
+// 	} else {
+// 		next();
+// 	}
+// });
 
 router.use(auth);
 
@@ -96,6 +99,19 @@ router.post('/vertical-scale/:direction/:name', (req, res) => {
 	}).catch(err => {
 		console.error(err.stack);
 		res.sendStatus(500)
+	})
+});
+
+router.get('/status/:app', (req, res) => {
+	return co(function* (){
+		const app = registry.getAppData(req.params.app);
+		const appInfo = yield info(app);
+		const appMetrics = yield metrics(appInfo);
+		const appStatus = yield status(appInfo, appMetrics);
+		res.json(appStatus);
+	}).catch(err => {
+		console.error(err.stack);
+		res.sendStatus(500);
 	})
 });
 
