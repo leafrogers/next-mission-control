@@ -200,4 +200,3 @@ module.exports.flush = () => {
 		module.exports[fn.name].clear();
 	})
 };
-
