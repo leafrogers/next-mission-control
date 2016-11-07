@@ -90,10 +90,26 @@ module.exports = function getAppStatus(info, metrics){
 			for(let message of nodeStatus.messages){
 				status.messages.push(Object.assign({}, message, {region:Case.upper(node.region)}));
 			}
+
 			status.nodes.push(nodeStatus);
 		}
-		info.nodes.forEach((node, index) => {
 
+		status.messages.sort((a, b) => {
+			if(a.status === b.status){
+				return 0;
+			}
+
+			if(a.status === 'error'){
+				return -1;
+			}
+
+			if(a.status === 'problem'){
+				return 1;
+			}
+
+			if(a.status === 'warning'){
+				return b.status === 'error' ? 1 : -1;
+			}
 		});
 
 		status.up = status.nodes.every(n => n.up);
