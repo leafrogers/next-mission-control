@@ -7,6 +7,7 @@ const debug = require('debug')('heroku');
 const querystring = require('querystring');
 const moment = require('moment');
 const memoizee = require('memoizee');
+const ms = require('ms');
 
 const token = process.env.HEROKU_AUTH_TOKEN;
 
@@ -185,7 +186,7 @@ function load(appId){
 }
 
 function memoize(fn){
-	return memoizee(fn, {promise: true, maxAge: 1000, preFetch: true});
+	return memoizee(fn, {promise: true, maxAge: ms('1m'), preFetch: true});
 }
 
 const funcs = [errors, memory, responseTime, responseStatus, load];
