@@ -43,14 +43,17 @@
 									<tr>
 										<th scope="row">AVERAGE</th>
 										<td class="metric-data__value metric-data__value--{{metrics.memory.average.status}}">{{metrics.memory.average.value}}MB</td>
+										<td class="metric-data__value metric-data__value--{{metrics.memory.average.status}}">{{metrics.memory.average.percentage}}%</td>
 									</tr>
 									<tr>
 										<th scope="row">MAX</th>
 										<td class="metric-data__value metric-data__value--{{metrics.memory.max.status}}">{{metrics.memory.max.value}}MB</td>
+										<td class="metric-data__value metric-data__value--{{metrics.memory.max.status}}">{{metrics.memory.max.percentage}}%</td>
 									</tr>
 									<tr>
 										<th scope="row">MAX RSS</th>
 										<td class="metric-data__value metric-data__value--{{metrics.memory.maxRss.status}}">{{metrics.memory.maxRss.value}}MB</td>
+										<td class="metric-data__value metric-data__value--{{metrics.memory.maxRss.status}}">{{metrics.memory.maxRss.percentage}}%</td>
 									</tr>
 								</tbody>
 							</table>
