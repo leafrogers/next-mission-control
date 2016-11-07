@@ -108,6 +108,10 @@ router.get('/status/:app', (req, res) => {
 		const appInfo = yield info(app);
 		const appMetrics = yield metrics(appInfo);
 		const appStatus = yield status(appInfo, appMetrics);
+		appStatus.overall = 'ok';
+		if(appStatus.messages.length){
+			appStatus.overall = appStatus.messages[0].status;
+		}
 		res.json(appStatus);
 	}).catch(err => {
 		console.error(err.stack);
