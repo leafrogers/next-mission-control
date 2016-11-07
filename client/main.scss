@@ -1,3 +1,27 @@
+$status-colors: (
+	error: (#ebbcb3,  #cc0033),
+	warning: (lighten(#eda45e, 20), #d66d06),
+	problem: (lighten(#ffe500, 30), darken(#ffe500, 20)),
+	ok: (#a1dbb2, #09a25c)
+);
+
+@function status-color($status-name, $use-case){
+	$status: map_get($status-colors, $status-name);
+	@if($use-case == 'background'){
+		@return nth($status, 1);
+	}
+
+	@if($use-case == 'text'){
+		@return nth($status, 2);
+	}
+}
+
+@mixin status($status){
+	background-color: status-color($status, 'background');
+	color: status-color($status, 'text') !important;
+	border-color: status-color($status, 'text');
+}
+
 html, body {
 	margin: 0;
 	padding: 0;
@@ -56,17 +80,19 @@ li[role="tab"] a{
 }
 
 .status--up {
-	background-color:#a1dbb2;
-	color: #09a25c;
-	border-color:#09a25c;
-	text-align: center;
+	@include status('ok');
+}
+
+.status--problem {
+	@include status('problem');
+}
+
+.status--warning {
+	@include status('warning');
 }
 
 .status--down {
-	background-color: #ebbcb3;
-	color: #cc0033;
-	border-color: #cc0033;
-	text-align: center;
+	@include status('error');
 }
 
 .status__node-status {
@@ -95,15 +121,15 @@ li[role="tab"] a{
 }
 
 .metric-data .metric-data__value--ok {
-	color:#458b00
+	color:status-color('ok', 'text');
 }
 
 .metric-data .metric-data__value--warning {
-	color:#d66d06;
+	color:status-color('warning', 'text');
 }
 
 .metric-data .metric-data__value--error {
-	color:#cc0000;
+	color:status-color('error', 'text');
 }
 
 .action--scale-up:after {

@@ -7,7 +7,7 @@
 		<li class="status-overview__item status--{{#if up}}up{{else}}down{{/if}}">
 			{{#if up}}UP{{else}}DOWN{{/if}}
 		</li>
-		<li class="status-overview__item status--{{#if healthy}}up{{else}}down{{/if}}">
+		<li class="status-overview__item status--{{healthStatus}}">
 			{{#if healthy}}HEALTHY{{else}}UNHEALTHY{{/if}}
 		</li>
 	</ul>
@@ -31,7 +31,7 @@
 					</tr>
 					<tr>
 						<th scope="row"><a href="{{url}}/__health">HEALTH</a></th>
-						<td class="{{#if health.overall}}status--up{{else}}status--down{{/if}}">{{health.statusText}}</td>
+						<td class="status--{{health.status}}">{{health.statusText}}</td>
 					</tr>
 				</table>
 			</div>

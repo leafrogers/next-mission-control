@@ -8,7 +8,13 @@
 	<div class="o-techdocs-container">
 		<div class="o-techdocs-layout">
 
-			{{> navigation}}
+			<div class="o-techdocs-sidebar">
+				<ul class="o-techdocs-nav">
+					{{#each apps}}
+						<li><a href="/{{name}}">{{title}}</a></li>
+					{{/each}}
+				</ul>
+			</div>
 
 			<!-- Main content (outer div for layout, inner for formatting) -->
 			<div class="o-techdocs-main">
