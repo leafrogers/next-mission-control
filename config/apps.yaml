@@ -1,0 +1,19 @@
+apps:
+  - &front-page
+    name: front-page
+    title: 'Front Page'
+  - &stream-page
+    name: stream-page
+    title: 'Stream Page'
+  - &article
+    name: article
+    title: 'Article Page'
+  - &preflight
+    name: preflight
+    title: 'Preflight'
+  - &router
+    name: router
+    title: 'Router'
+  - &es-interface
+    name: es-interface
+    title: 'ES Interface'

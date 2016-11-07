@@ -1,6 +1,7 @@
 const expect = require('chai').expect;
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const fetchStub = require('./stubs/node-fetch.stub');
+const sinon = require('sinon');
 
 describe('Heroku Metrics API Client', () => {
 
@@ -22,8 +23,17 @@ describe('Heroku Metrics API Client', () => {
 		Math.floor((perc / 100) * number);
 	}
 
+	function wait(ms){
+		return new Promise(r => setTimeout(r, ms));
+	}
+
 	before(() => {
 		metrics = proxyquire('../server/lib/heroku-metrics', {'node-fetch':fetchStub.stub});
+	});
+
+	afterEach(() => {
+		fetchStub.reset();
+		metrics.flush();
 	});
 
 	it('Should be able to get error metrics', () => {
@@ -104,6 +114,17 @@ describe('Heroku Metrics API Client', () => {
 				expect(load.rawData).to.exist;
 				expect(load.mean.value).to.equal(expectedMean);
 				expect(load.max.value).to.equal(expectedMax);
+			});
+	});
+
+	it('Should memoize all methods', () => {
+		const fixture = require('./fixtures/dyno-load-reponse.json');
+		fetchStub.setup(fixture);
+		return metrics.load('d057116e-e17f-42fe-be00-9cd212403652')
+			.then(() => wait(100))
+			.then(() => metrics.load('d057116e-e17f-42fe-be00-9cd212403652'))
+			.then(() => {
+				sinon.assert.calledOnce(fetchStub.stub);
 			});
 	})
 

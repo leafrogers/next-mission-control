@@ -6,6 +6,8 @@ const log = require('@financial-times/n-logger').default;
 const debug = require('debug')('heroku');
 const querystring = require('querystring');
 const moment = require('moment');
+const memoizee = require('memoizee');
+const ms = require('ms');
 
 const token = process.env.HEROKU_AUTH_TOKEN;
 
@@ -102,22 +104,28 @@ function calculateMemoryStatus(val, thresholds){
 
 function getMetricValue(arr, type, thresholds, normalize){
 	let val;
+	let percentage;
 	if(type === 'average'){
 		val = calculateAverage(arr)
 	}else if(type === 'highest'){
 		val = findHighest(arr);
 	}
 
+	if(thresholds && thresholds.quota){
+		percentage = Math.round((val / thresholds.quota) * 100);
+	}
+
 	if(normalize){
 		val = Math[normalize](val);
 	}
 
-	return {value:val, status:calculateMemoryStatus(val, thresholds)}
+	return {value:val, status:calculateMemoryStatus(val, thresholds), percentage}
 }
 
 function calculateThresholds(quota){
 	// if usages is 80% of available show warning, over 90% show as error
 	return {
+		'quota': quota,
 		'error': (90 / 100) * quota,
 		'warning': (80 / 100) * quota
 	}
@@ -177,4 +185,18 @@ function load(appId){
 	})
 }
 
-module.exports = {errors, memory, responseTime, responseStatus, load};
+function memoize(fn){
+	return memoizee(fn, {promise: true, maxAge: ms('1m'), preFetch: true});
+}
+
+const funcs = [errors, memory, responseTime, responseStatus, load];
+
+for(let fn of funcs){
+	module.exports[fn.name] = memoize(fn);
+}
+
+module.exports.flush = () => {
+	funcs.forEach(fn => {
+		module.exports[fn.name].clear();
+	})
+};

@@ -2,8 +2,10 @@ const fetch = require('node-fetch');
 const co = require('co');
 const log = require('@financial-times/n-logger').default;
 const debug = require('debug')('heroku');
+const ms = require('ms');
 
 const token = process.env.HEROKU_AUTH_TOKEN;
+const memoizee = require('memoizee');
 
 if(!token){
 	throw new Error(`Missing HEROKU_AUTH_TOKEN`);
@@ -54,4 +56,12 @@ function getCurrentFormation(appId){
 	});
 }
 
-module.exports = {getAppInfo, scale, getCurrentFormation};
+function memoize(fn){
+	return memoizee(fn, {promise:true, maxAge:ms('15m'), preFetch:true});
+}
+
+module.exports = {
+	getAppInfo: memoize(getAppInfo),
+	scale,
+	getCurrentFormation: memoize(getCurrentFormation)
+};
