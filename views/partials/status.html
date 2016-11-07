@@ -3,14 +3,25 @@
 		<h2>Status</h2>
 	</div>
 
-	<ul class="status-overview">
-		<li class="status-overview__item status--{{#if up}}up{{else}}down{{/if}}">
-			{{#if up}}UP{{else}}DOWN{{/if}}
-		</li>
-		<li class="status-overview__item status--{{healthStatus}}">
-			{{#if healthy}}HEALTHY{{else}}UNHEALTHY{{/if}}
-		</li>
-	</ul>
+	<div class="status-overview__container">
+		<ul class="status-overview">
+			<li class="status-overview__item status--{{#if up}}up{{else}}down{{/if}}">
+				{{#if up}}UP{{else}}DOWN{{/if}}
+			</li>
+			<li class="status-overview__item status--{{healthStatus}}">
+				{{#if healthy}}HEALTHY{{else}}UNHEALTHY{{/if}}
+			</li>
+		</ul>
+		{{#each messages}}
+		<ul class="status-overview">
+			<li class="status-overview__message status-overview__item status--{{this.status}}">
+				Region: {{this.region}}. {{this.text}}
+			</li>
+		</ul>
+		{{/each}}
+	</div>
+
+
 
 	<ul data-o-component="o-tabs" class="o-tabs o-tabs--big o-tabs--buttontabs" role="tablist">
 		{{#each nodes}}

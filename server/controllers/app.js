@@ -20,5 +20,8 @@ module.exports = (req, res) => {
 		viewModel.metrics = yield metrics(viewModel.info);
 		viewModel.status = yield status(viewModel.info, viewModel.metrics);
 		res.render('app', viewModel);
-	});
+	}).catch(err => {
+		console.error(err.stack);
+		res.sendStatus(500);
+	})
 };

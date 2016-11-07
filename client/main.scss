@@ -63,11 +63,14 @@ li[role="tab"] a{
 	text-transform: uppercase;
 }
 
+.status-overview__container {
+	margin-bottom: 10px;
+}
+
 .status-overview {
 	display: flex;
 	margin: 0;
 	padding: 0;
-	margin-bottom: 10px;
 }
 
 .status-overview__item {
@@ -77,6 +80,10 @@ li[role="tab"] a{
 	flex-grow: 1;
 	text-align: center;
 	border:1px solid;
+}
+
+.status-overview__message {
+	text-align: left;
 }
 
 .status--up {
@@ -93,6 +100,14 @@ li[role="tab"] a{
 
 .status--down {
 	@include status('error');
+}
+
+.status--error {
+	@include status('error');
+}
+
+.status--ok {
+	@include status('ok');
 }
 
 .status__node-status {
