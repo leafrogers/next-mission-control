@@ -177,11 +177,29 @@ li[role="tab"] a{
 	margin: 20px 0;
 }
 
+.applist__item {
+	border: 1px solid #CCCCCC;
+	border-collapse: collapse;
+}
+
+.applist__info {
+	display: flex;
+	align-items: center;
+}
+
+.applist__title {
+	flex-grow: 1;
+	margin: 0 !important;
+}
+
 .applist__status {
 	width: 50px;
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size:contain;
+	margin: 0 10px 0 0;
+	height: 50px;
+	font-size: 30px;
 }
 
 .applist__status--waiting {
@@ -196,6 +214,11 @@ li[role="tab"] a{
 	&:before {
 		content: "\f00c";
 	}
+}
+
+.applist__message {
+	border-style: solid;
+	border-width: 1px;
 }
 
 .applist__status--warning, .applist__status--problem, .applist__status--error {
@@ -222,5 +245,18 @@ li[role="tab"] a{
 .applist__link {
 	width: 100px;
 }
+
+.applist__messages {
+	display: none;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+
+	&.visible {
+		display: block;
+	}
+}
+
+
 
 

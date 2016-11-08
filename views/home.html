@@ -14,21 +14,22 @@
 					<p>&nbsp;</p>
 
 					<div class="o-techdocs-table-wrapper applist">
-						<table>
+						<div class="applist">
 							{{#each apps}}
-								<tr data-appname="{{name}}">
-									<td class="applist__status applist__status--waiting"></td>
-									<td class="applist__name">{{title}}</td>
-									<td class="applist__link"><button class="o-buttons"><a href="/{{name}}">Details</a></button></td>
-								</tr>
-								<tr class="applist__messages" data-appname="{{name}}">
-									<table>
-										<tbody>
-										</tbody>
-									</table>
-								</tr>
+								<div class="applist__item" data-appname="{{name}}">
+									<div class="applist__info">
+										<span class="applist__status applist__status--waiting"></span>
+										<h4 class="applist__title">{{title}}</h4>
+										<span class="applist__link">
+										<button class="o-buttons"><a href="/{{name}}">Details</a></button>
+									</span>
+									</div>
+									<ul class="applist__messages">
+
+									</ul>
+								</div>
 							{{/each}}
-						</table>
+						</div>
 					</div>
 
 				</div> <!-- /o-techdocs-content -->
