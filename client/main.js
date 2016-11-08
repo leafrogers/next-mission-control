@@ -1,3 +1,4 @@
+require('isomorphic-fetch');
 const home = require('./home');
 
 const LOADER_VISIBLE_CLASS = 'loading--visible';

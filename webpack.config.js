@@ -8,7 +8,7 @@ var dir_js = path.resolve(__dirname, 'client');
 var dir_build = path.resolve(__dirname, 'public');
 
 module.exports = {
-	entry: path.resolve(dir_js, 'main.js'),
+	entry: ['babel-polyfill', path.resolve(dir_js, 'main.js')],
 	output: {
 		path: dir_build,
 		filename: 'main.js'
@@ -17,8 +17,11 @@ module.exports = {
 		loaders: [
 			{
 				loader: 'babel-loader',
-				test: dir_js
-			}
+				test: dir_js,
+				query: {
+					presets: ['es2015']
+				}
+			},
 		]
 	},
 	stats: {
