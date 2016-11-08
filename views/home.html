@@ -1,4 +1,4 @@
-<main>
+<main data-page="home">
 	<!-- Hero banner to promote your service in a few words -->
 	<div class="o-techdocs-hero">
 
@@ -8,18 +8,29 @@
 	<div class="o-techdocs-container">
 		<div class="o-techdocs-layout">
 
-			<div class="o-techdocs-sidebar">
-				<ul class="o-techdocs-nav">
-					{{#each apps}}
-						<li><a href="/{{name}}">{{title}}</a></li>
-					{{/each}}
-				</ul>
-			</div>
-
 			<!-- Main content (outer div for layout, inner for formatting) -->
 			<div class="o-techdocs-main">
 				<div class="o-techdocs-content">
+					<p>&nbsp;</p>
 
+					<div class="o-techdocs-table-wrapper applist">
+						<div class="applist">
+							{{#each apps}}
+								<div class="applist__item" data-appname="{{name}}">
+									<div class="applist__info">
+										<span class="applist__status applist__status--waiting"></span>
+										<h4 class="applist__title">{{title}}</h4>
+										<span class="applist__link">
+										<button class="o-buttons"><a href="/{{name}}">Details</a></button>
+									</span>
+									</div>
+									<ul class="applist__messages">
+
+									</ul>
+								</div>
+							{{/each}}
+						</div>
+					</div>
 
 				</div> <!-- /o-techdocs-content -->
 

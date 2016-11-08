@@ -1,3 +1,5 @@
+const home = require('./home');
+
 const LOADER_VISIBLE_CLASS = 'loading--visible';
 
 function $$(selector){
@@ -50,6 +52,10 @@ function doApiAction(button){
 
 function init(){
 	$$('.js-api').forEach(button =>button.addEventListener('click', doApiAction.bind(null, button)))
+	const page = document.querySelector('main').dataset.page;
+	if(page && page === 'home'){
+		home.init();
+	}
 }
 
 init();

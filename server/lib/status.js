@@ -18,7 +18,9 @@ function getNodeStatusMessages(status, metrics){
 
 	if(metrics.errors.length){
 		for(let error of metrics.errors){
-			messages.push({status:'warning', text:`There have been ${error.count} ${error.title} errors in the last hour`})
+			if(!['H27'].includes(error.code)){
+				messages.push({status:'warning', text:`There have been ${error.count} ${error.title} (${error.code}) errors in the last hour`});
+			}
 		}
 	}
 
