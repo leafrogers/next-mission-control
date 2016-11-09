@@ -63,5 +63,5 @@ function memoize(fn){
 module.exports = {
 	getAppInfo: memoize(getAppInfo),
 	scale,
-	getCurrentFormation: memoize(getCurrentFormation)
+	getCurrentFormation: getCurrentFormation
 };
