@@ -32,6 +32,11 @@ function doApiAction(button){
 	const hideLoader = () => loader.classList.remove(LOADER_VISIBLE_CLASS);
 	button.blur();
 	showLoader();
+	if(button.dataset.confirm && !confirm(button.dataset.confirm)){
+		hideLoader();
+		return;
+	}
+
 	fetch(url, {method, credentials:'include'})
 		.then(response => {
 			if(!response.ok){

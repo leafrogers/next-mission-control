@@ -2,6 +2,7 @@ const ping = require('./ping');
 const co = require('co');
 const debug = require('debug')('status');
 const Case = require('case');
+const health = require('./health');
 
 const severitytoStatusMap = new Map([
 	['1', 'error'],
@@ -10,7 +11,6 @@ const severitytoStatusMap = new Map([
 ]);
 
 function getNodeStatusMessages(status, metrics){
-	console.log(getNodeStatusMessages.name, metrics);
 	const messages = [];
 	if(!status.up){
 		messages.push({status:'error', text:'App in not responding to /__gtg requests'})
@@ -25,7 +25,7 @@ function getNodeStatusMessages(status, metrics){
 	}
 
 	if(!status.health.overall){
-		messages.push({status:status.health.status, text:'Healthchecks are failing'});
+		messages.push({status:status.health.status, text:status.health.statusText});
 	}
 
 	if(metrics.memory.average.status !== 'ok'){
@@ -53,21 +53,12 @@ function getNodeStatus(node, info, metrics){
 		const status = {
 			region: node.region,
 			url: node.url,
-			name: node.url.replace(/https?:\/\//, '').replace('.herokuapp.com', ''),
-			health: {overall:true, statusText:'OK', status:'ok'}
+			name: node.url.replace(/https?:\/\//, '').replace('.herokuapp.com', '')
 		};
 
 		const gtgPing = yield ping(`${node.url}/__gtg`);
 		status.up = gtgPing.result;
-		for(let i of ['3', '2', '1']){
-			const {result} = yield ping(`${node.url}/__health.${i}`);
-			status.health[i] = result;
-			if(!result){
-				status.health.overall = false;
-				status.health.status = severitytoStatusMap.get(i);
-				status.health.statusText = `Error: Severity ${i}`;
-			}
-		}
+		status.health = yield health(node.url);
 
 		status.scale = {
 			initial: {size: Case.capital(info.formation.web.size), quantity: info.formation.web.scale},
@@ -82,7 +73,6 @@ function getNodeStatus(node, info, metrics){
 }
 
 module.exports = function getAppStatus(info, metrics){
-	console.log('metrics', metrics);
 	return co(function* (){
 		const status = {nodes: [], messages:[]};
 		debug('getAppStatus', info);
