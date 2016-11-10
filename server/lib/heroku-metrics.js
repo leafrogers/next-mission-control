@@ -8,6 +8,7 @@ const querystring = require('querystring');
 const moment = require('moment');
 const memoizee = require('memoizee');
 const ms = require('ms');
+const config = require('./config')();
 
 const token = process.env.HEROKU_AUTH_TOKEN;
 
@@ -66,10 +67,12 @@ function getParams(){
 	return Object.assign({}, getDateParams(), {'step':'10m'});
 }
 
-function errors(appId){
+function errors(appName){
 	return co(function* (){
 		const params = getParams();
-		const metrics = yield api(`/metrics/${appId}/router/errors`, params);
+		const appConfig = getAppConfig(appName);
+		const thresholds = appConfig && appConfig.thresholds ? appConfig.thresholds.errorCode : config.default_thresholds.errorCode;
+		const metrics = yield api(`/metrics/${appName}/router/errors`, params);
 		return Object.keys(metrics.data).map(code => {
 			const error = {code};
 			if(ERROR_CODE_MAP.has(code)){
@@ -78,6 +81,12 @@ function errors(appId){
 
 			//the data is an error of values, or null if no value, this lines adds up the values, ignoring null (and 0)
 			error.count = metrics.data[code].reduce((p, c) => c ? p + c : p, 0);
+			error.status = 'problem';
+			for(let level of ['error', 'warning', 'ok']){
+				if(thresholds[level].includes(code)){
+					error.status = level;
+				}
+			}
 
 			return error;
 		});
@@ -92,17 +101,18 @@ function findHighest(arr){
 	return arr.reduce((p, c) => c > p ? c : p, 0);
 }
 
-function calculateMemoryStatus(val, thresholds){
-	if(thresholds.error && val > thresholds.error){
-		return 'error';
-	}else if(thresholds.warning && val > thresholds.warning){
-		return 'warning';
-	}else{
-		return 'ok';
+function calculateStatus(val, percentage, thresholds){
+	const valToUse = (typeof thresholds.error === 'string' && thresholds.error.includes('%') ) ? parseInt(percentage, 10) : val;
+	for(let threshold of ['error', 'warning', 'problem']){
+		if(thresholds[threshold] && valToUse > thresholds[threshold]){
+			return threshold;
+		}
 	}
+
+	return 'ok';
 }
 
-function getMetricValue(arr, type, thresholds, normalize){
+function getMetricValue(arr, thresholds, type, normalize){
 	let val;
 	let percentage;
 	if(type === 'average'){
@@ -119,50 +129,65 @@ function getMetricValue(arr, type, thresholds, normalize){
 		val = Math[normalize](val);
 	}
 
-	return {value:val, status:calculateMemoryStatus(val, thresholds), percentage}
+	return {value:val, status:calculateStatus(val, percentage, thresholds), percentage}
 }
 
-function calculateThresholds(quota){
-	// if usages is 80% of available show warning, over 90% show as error
-	return {
-		'quota': quota,
-		'error': (90 / 100) * quota,
-		'warning': (80 / 100) * quota
+function getAppConfig(appName){
+	const name = appName.replace(/^ft-next-/, '').replace(/(-eu|-us)$/, '').replace('-v003', '');
+	const appConfig = config.apps.find(app => app.name === name);
+	if(!appConfig){
+		log.error({event:'NO_APP_CONFIG', name});
+		return {thresholds:config.default_thresholds};
+	}else{
+		return appConfig;
 	}
 }
 
-function memory(appId){
+function getThresholds({appName, category, type = null, quota}){
+	try{
+		const appConfig  = getAppConfig(appName);
+		const thresholds = type ? appConfig.thresholds[category][type] : appConfig.thresholds[category];
+		thresholds.quota = quota;
+		return thresholds;
+	}catch(e){
+		log.error({event:'NO_APP_THRESHOLDS_FOUND', name, error:e.message, stack:e.stack.replace(/\n/g, '; ')});
+		return {};
+	}
+}
+
+function memory(appName){
 	return co(function* (){
 		const params  = getParams();
-		const metrics = yield api(`/metrics/${appId}/dyno/memory`, params);
+		const metrics = yield api(`/metrics/${appName}/dyno/memory`, params);
 		const memoryUsage = {rawData:metrics};
-		const thresholds = calculateThresholds(metrics.data.memory_quota[0]);
-		memoryUsage.average = getMetricValue(metrics.data.memory_average, 'average', thresholds, 'round');
-		memoryUsage.max = getMetricValue(metrics.data.memory_total_max, 'highest', thresholds, 'ceil');
-		memoryUsage.maxRss = getMetricValue(metrics.data.memory_max_rss, 'highest', thresholds, 'ceil');
+		const thresholdArgs = type => Object.assign({}, {appName, category:'memory', type, quota:metrics.data.memory_quota[0]});
+		memoryUsage.average = getMetricValue(metrics.data.memory_average, getThresholds(thresholdArgs('average')), 'average', 'round');
+		memoryUsage.max = getMetricValue(metrics.data.memory_total_max, getThresholds(thresholdArgs('max')), 'highest', 'ceil');
+		memoryUsage.maxRss = getMetricValue(metrics.data.memory_max_rss, getThresholds(thresholdArgs('max_rss')), 'highest', 'ceil');
 		return memoryUsage;
 	})
 }
 
-function responseTime(appId){
+function responseTime(appName){
 	return co(function* (){
 		const params = getParams();
-		const metrics = yield api(`/metrics/${appId}/router/latency`, params);
+		const metrics = yield api(`/metrics/${appName}/router/latency`, params);
 		const responseTimes = {rawData:metrics};
-		const thresholds = calculateThresholds(1000);
-		responseTimes.median = getMetricValue(metrics.data.latency_p50, 'average', thresholds, 'round');
-		responseTimes.p95 = getMetricValue(metrics.data.latency_p95, 'average', thresholds, 'round');
+		const thresholdArgs = type => Object.assign({}, {appName, category:'responseTime', type});
+		responseTimes.median = getMetricValue(metrics.data.latency_p50, getThresholds(thresholdArgs('median')), 'average' , 'round');
+		responseTimes.p95 = getMetricValue(metrics.data.latency_p95, getThresholds(thresholdArgs('p95')), 'average', 'round');
 		return responseTimes;
 	});
 }
 
-function responseStatus(appId){
+function responseStatus(appName){
 	return co(function* (){
 		const params = getParams();
-		const metrics = yield api(`/metrics/${appId}/router/status`, params);
+		const metrics = yield api(`/metrics/${appName}/router/status`, params);
 		const responseStatus = {rawData:metrics};
+		const thresholds = getThresholds({appName, category:'responseStatus', type:'5XX'});
 		responseStatus.list = Object.keys(metrics.data).map(status => {
-			const val = getMetricValue(metrics.data[status], 'average', {}, 'round');
+			const val = getMetricValue(metrics.data[status], status.startsWith('5') ? thresholds : {}, 'average', 'round');
 			val.code = status;
 			return val;
 		});
@@ -178,8 +203,8 @@ function load(appId){
 		const params = getParams();
 		const metrics = yield api(`/metrics/${appId}/dyno/load`, params);
 		const load = {rawData:metrics};
-		load.mean = getMetricValue(metrics.data.load_mean, 'average', {});
-		load.max = getMetricValue(metrics.data.load_max, 'highest', {});
+		load.mean = getMetricValue(metrics.data.load_mean, {}, 'average');
+		load.max = getMetricValue(metrics.data.load_max, {}, 'highest');
 
 		return load;
 	})

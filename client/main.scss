@@ -149,6 +149,10 @@ li[role="tab"] a{
 	color:status-color('error', 'text');
 }
 
+.metric-data .metric-data__value--problem {
+	color:status-color('problem', 'text');
+}
+
 .action--scale-up:after {
 	content: ' ↑';
 }
