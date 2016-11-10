@@ -4,6 +4,7 @@ const yaml = require('js-yaml');
 
 const configFiles = new Map();
 
+configFiles.set('thresholds', path.resolve(__dirname, '../../config/thresholds.yaml'));
 configFiles.set('apps', path.resolve(__dirname, '../../config/apps.yaml'));
 
 let configData;
@@ -18,7 +19,7 @@ function config(){
 		configData =  yaml.safeLoad(yamlData.join('\n'));
 	}
 
-	return configData;
+	return JSON.parse(JSON.stringify(configData));
 }
 
 module.exports = config;

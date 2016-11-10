@@ -2,18 +2,24 @@ apps:
   - &front-page
     name: front-page
     title: 'Front Page'
+    thresholds: *default_thresholds
   - &stream-page
     name: stream-page
     title: 'Stream Page'
+    thresholds: *default_thresholds
   - &article
     name: article
     title: 'Article Page'
+    thresholds: *default_thresholds
   - &preflight
     name: preflight
     title: 'Preflight'
+    thresholds: *default_thresholds
   - &router
     name: router
     title: 'Router'
+    thresholds: *default_thresholds
   - &es-interface
     name: es-interface
     title: 'ES Interface'
+    thresholds: *default_thresholds
