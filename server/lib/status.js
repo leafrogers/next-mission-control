@@ -75,7 +75,7 @@ function getNodeStatus(node, info, metrics){
 module.exports = function getAppStatus(info, metrics){
 	return co(function* (){
 		const status = {nodes: [], messages:[]};
-		debug('getAppStatus', info);
+		debug('getAppStatus', info, metrics);
 		for(let i=0, l=info.nodes.length; i<l; i++){
 			const node = info.nodes[i];
 			const nodeStatus = yield getNodeStatus(node, info, metrics.nodes[i].metrics);

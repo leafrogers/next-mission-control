@@ -10,14 +10,18 @@ module.exports = function getAppMetrics(appInfo){
 		for(let node of appInfo.nodes){
 			const nodeMetrics = {
 				region:node.region,
-				metrics:{},
 				herokuMetricsDashboardUrl: `https://dashboard.heroku.com/apps/${node.name}/metrics/web?starting=24-hours-ago`
 			};
-			nodeMetrics.metrics.errors = yield herokuMetrics.errors(node.name);
-			nodeMetrics.metrics.memory = yield herokuMetrics.memory(node.name);
-			nodeMetrics.metrics.responseTime = yield herokuMetrics.responseTime(node.name);
-			nodeMetrics.metrics.responseStatus = yield herokuMetrics.responseStatus(node.name);
-			nodeMetrics.metrics.load = yield herokuMetrics.load(node.name);
+
+			const [errors, memory, responseTime, responseStatus, load] = yield Promise.all([
+				herokuMetrics.errors(node.id),
+				herokuMetrics.memory(node.id),
+				herokuMetrics.responseTime(node.id),
+				herokuMetrics.responseStatus(node.id),
+				herokuMetrics.load(node.id)
+			]);
+
+			nodeMetrics.metrics = {errors, memory, responseTime, responseStatus, load};
 			metrics.nodes.push(nodeMetrics);
 		}
 
