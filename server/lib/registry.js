@@ -13,7 +13,7 @@ function getData(){
 
 function getAppData(name){
 	const allApps = getData();
-	name = name.replace('ft-next-', '');
+	name = name.replace('ft-next-', '').replace('-v003', '');
 	return allApps.find(a => a.name === name);
 }
 

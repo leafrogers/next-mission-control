@@ -13,11 +13,11 @@ module.exports = function getAppMetrics(appInfo){
 				metrics:{},
 				herokuMetricsDashboardUrl: `https://dashboard.heroku.com/apps/${node.name}/metrics/web?starting=24-hours-ago`
 			};
-			nodeMetrics.metrics.errors = yield herokuMetrics.errors(node.id);
-			nodeMetrics.metrics.memory = yield herokuMetrics.memory(node.id);
-			nodeMetrics.metrics.responseTime = yield herokuMetrics.responseTime(node.id);
-			nodeMetrics.metrics.responseStatus = yield herokuMetrics.responseStatus(node.id);
-			nodeMetrics.metrics.load = yield herokuMetrics.load(node.id);
+			nodeMetrics.metrics.errors = yield herokuMetrics.errors(node.name);
+			nodeMetrics.metrics.memory = yield herokuMetrics.memory(node.name);
+			nodeMetrics.metrics.responseTime = yield herokuMetrics.responseTime(node.name);
+			nodeMetrics.metrics.responseStatus = yield herokuMetrics.responseStatus(node.name);
+			nodeMetrics.metrics.load = yield herokuMetrics.load(node.name);
 			metrics.nodes.push(nodeMetrics);
 		}
 

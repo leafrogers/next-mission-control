@@ -67,10 +67,12 @@ function getParams(){
 	return Object.assign({}, getDateParams(), {'step':'10m'});
 }
 
-function errors(appId){
+function errors(appName){
 	return co(function* (){
 		const params = getParams();
-		const metrics = yield api(`/metrics/${appId}/router/errors`, params);
+		const appConfig = getAppConfig(appName);
+		const thresholds = appConfig && appConfig.thresholds ? appConfig.thresholds.errorCode : config.default_thresholds.errorCode;
+		const metrics = yield api(`/metrics/${appName}/router/errors`, params);
 		return Object.keys(metrics.data).map(code => {
 			const error = {code};
 			if(ERROR_CODE_MAP.has(code)){
@@ -79,6 +81,12 @@ function errors(appId){
 
 			//the data is an error of values, or null if no value, this lines adds up the values, ignoring null (and 0)
 			error.count = metrics.data[code].reduce((p, c) => c ? p + c : p, 0);
+			error.status = 'problem';
+			for(let level of ['error', 'warning', 'ok']){
+				if(thresholds[level].includes(code)){
+					error.status = level;
+				}
+			}
 
 			return error;
 		});
@@ -124,10 +132,20 @@ function getMetricValue(arr, thresholds, type, normalize){
 	return {value:val, status:calculateStatus(val, percentage, thresholds), percentage}
 }
 
+function getAppConfig(appName){
+	const name = appName.replace(/^ft-next-/, '').replace(/(-eu|-us)$/, '').replace('-v003', '');
+	const appConfig = config.apps.find(app => app.name === name);
+	if(!appConfig){
+		log.error({event:'NO_APP_CONFIG', name});
+		return {thresholds:config.default_thresholds};
+	}else{
+		return appConfig;
+	}
+}
+
 function getThresholds({appName, category, type = null, quota}){
-	const name = appName.replace(/^ft-next-/, '').replace(/(-eu|-us)$/, '');
 	try{
-		const appConfig  = config.apps.find(app => app.name === name) || {thresholds:config.default_thresholds};
+		const appConfig  = getAppConfig(appName);
 		const thresholds = type ? appConfig.thresholds[category][type] : appConfig.thresholds[category];
 		thresholds.quota = quota;
 		return thresholds;

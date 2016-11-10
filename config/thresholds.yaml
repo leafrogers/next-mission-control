@@ -14,9 +14,9 @@ default_thresholds: &default_thresholds
       problem: 80%
   responseTime:
     p95:
-      error: 1000
-      warning: 900
-      problem: 800
+      error: 1200
+      warning: 1000
+      problem: 900
     median:
       error: 750
       warning: 550
@@ -26,4 +26,7 @@ default_thresholds: &default_thresholds
       error: 5
       warning: 2
       problem: 1
-
+  errorCode:
+    error: [H10, H14]
+    warning: [H12, H19, H21]
+    ok: [H27]

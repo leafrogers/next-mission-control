@@ -18,8 +18,8 @@ function getNodeStatusMessages(status, metrics){
 
 	if(metrics.errors.length){
 		for(let error of metrics.errors){
-			if(!['H27'].includes(error.code)){
-				messages.push({status:'warning', text:`There have been ${error.count} ${error.title} (${error.code}) errors in the last hour`});
+			if(error.status !== 'ok'){
+				messages.push({status:error.status, text:`There have been ${error.count} ${error.title} (${error.code}) errors in the last hour`});
 			}
 		}
 	}
@@ -37,11 +37,11 @@ function getNodeStatusMessages(status, metrics){
 	}
 
 	if(metrics.responseTime.p95.status !== 'ok'){
-		messages.push({status:metrics.responseTime.p95.status, text: `95th Percentile response time above threshold`});
+		messages.push({status:metrics.responseTime.p95.status, text: `95th Percentile response time is slow`});
 	}
 
 	if(metrics.responseTime.median.status !== 'ok'){
-		messages.push({status:metrics.responseTime.median.status, text: `Median response time above threshold`});
+		messages.push({status:metrics.responseTime.median.status, text: `Median response time is slow`});
 	}
 
 	return messages;

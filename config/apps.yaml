@@ -18,7 +18,12 @@ apps:
   - &router
     name: router
     title: 'Router'
-    thresholds: *default_thresholds
+    thresholds:
+      <<: *default_thresholds
+      errorCode:
+          error: [H10, H14]
+          warning: [H12, H19, H21]
+          ok: [H13, H27]
   - &es-interface
     name: es-interface
     title: 'ES Interface'
