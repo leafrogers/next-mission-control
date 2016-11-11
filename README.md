@@ -14,12 +14,4 @@ There are some config files, written in yaml which allow customization of what w
 
 ## Todo
 
-- [ ] Custom metrics per-app
-- [ ] Custom actions per-app
-- [ ] Manual region failover
-- [ ] Figure out load thresholds
-- [ ] Get uptime data from pingdom
-- [ ] Get health data from wherever we monitor that
-- [ ] Metrics and actions for non-heroku apps (fastly, aws)
-- [ ] Get heroku metrics into graphite and use that as single authority
-- [ ] Persist scaling by saving to registry somehow
+See [here](https://github.com/Financial-Times/next-mission-control/issues/10)
