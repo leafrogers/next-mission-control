@@ -19,7 +19,7 @@ module.exports = function getAppInfo(app){
 		for(let i = 0, l = info.nodes.length; i<l; i++){
 			let node = info.nodes[i];
 			if(typeof node === 'string'){
-				node = {url:node};
+				node = {url:node, region:'eu'};
 			}
 
 			const herokuInfo = yield heroku.getAppInfo(node.url.replace(/https?:\/\//, '').replace('.herokuapp.com', ''));

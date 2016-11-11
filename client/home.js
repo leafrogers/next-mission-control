@@ -52,9 +52,7 @@ function addMessage(itemNode, message){
 function init(){
 	const rows = $$('.applist--main .applist__item[data-appname]');
 	return co(function* (){
-		for(let row of rows){
-			yield getAppStatus(row);
-		}
+		yield Promise.all(rows.map(r => getAppStatus(r)));
 	}).catch(err => console.error(err.stack));
 
 }
