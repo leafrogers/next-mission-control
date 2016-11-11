@@ -72,6 +72,11 @@
 				<small>* This is the setting in the registry.  App will return to this setting on deploy</small>
 			</div>
 
+			<div class="status__node-actions">
+				<button class="o-buttons js-api" data-method="POST" data-action="/scale-to-zero/{{name}}" data-confirm="This will effectively switch this app off - are you sure?">Scale down to 0</button>
+				<button class="o-buttons js-api" data-method="POST" data-action="/restore-scale/{{name}}">Restore to initial scale</button>
+			</div>
+
 		</div>
 	{{/each}}
 

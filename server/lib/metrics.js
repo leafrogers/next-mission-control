@@ -8,7 +8,6 @@ module.exports = function getAppMetrics(appInfo){
 		};
 
 		for(let node of appInfo.nodes){
-			console.log('node', node);
 			const nodeMetrics = {
 				region:node.region,
 				herokuMetricsDashboardUrl: `https://dashboard.heroku.com/apps/${node.name}/metrics/web?starting=24-hours-ago`

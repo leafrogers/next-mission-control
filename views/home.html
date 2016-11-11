@@ -32,6 +32,14 @@
 						</div>
 					</div>
 
+					<h2>Region Failover</h2>
+						<p>These buttons will switch off the router in a given region, causing the entire stack to failover</p>
+						<p>Go to the <a href="/router">router page</a> to undo</p>
+						<div class="status__node-actions">
+							<button class="o-buttons js-api" data-method="POST" data-action="/scale-to-zero/ft-next-router-v003" data-confirm="You're about to switch off the EU router, do you know what you're doing?">Failover to US</button>
+							<button class="o-buttons js-api" data-method="POST" data-action="/scale-to-zero/ft-next-router-v003-us" data-confirm="ou're about to switch off the US router, do you know what you're doing">Failover to EU</button>
+						</div>
+
 					<h3>Other Apps</h3>
 					<p>Click through for status.  This is list is not currated and many of these links will not work!</p>
 					<div class="o-techdocs-table-wrapper applist applist--other">
