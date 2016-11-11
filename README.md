@@ -16,7 +16,8 @@ There are some config files, written in yaml which allow customization of what w
 
 - [ ] Custom metrics per-app
 - [ ] Custom actions per-app
-- [ ] Manaual region failover
+- [ ] Manual region failover
+- [ ] Figure out load thresholds
 - [ ] Get uptime data from pingdom
 - [ ] Get health data from wherever we monitor that
 - [ ] Metrics and actions for non-heroku apps (fastly, aws)
