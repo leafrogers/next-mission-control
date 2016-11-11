@@ -20,3 +20,5 @@ There are some config files, written in yaml which allow customization of what w
 - [ ] Get uptime data from pingdom
 - [ ] Get health data from wherever we monitor that
 - [ ] Metrics and actions for non-heroku apps (fastly, aws)
+- [ ] Get heroku metrics into graphite and use that as single authority
+- [ ] Persist scaling by saving to registry somehow
