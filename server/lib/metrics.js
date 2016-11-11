@@ -8,17 +8,18 @@ module.exports = function getAppMetrics(appInfo){
 		};
 
 		for(let node of appInfo.nodes){
+			console.log('node', node);
 			const nodeMetrics = {
 				region:node.region,
 				herokuMetricsDashboardUrl: `https://dashboard.heroku.com/apps/${node.name}/metrics/web?starting=24-hours-ago`
 			};
 
 			const [errors, memory, responseTime, responseStatus, load] = yield Promise.all([
-				herokuMetrics.errors(node.id),
-				herokuMetrics.memory(node.id),
-				herokuMetrics.responseTime(node.id),
-				herokuMetrics.responseStatus(node.id),
-				herokuMetrics.load(node.id)
+				herokuMetrics.errors(node.name),
+				herokuMetrics.memory(node.name),
+				herokuMetrics.responseTime(node.name),
+				herokuMetrics.responseStatus(node.name),
+				herokuMetrics.load(node.name)
 			]);
 
 			nodeMetrics.metrics = {errors, memory, responseTime, responseStatus, load};

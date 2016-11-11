@@ -15,7 +15,7 @@ class HealthResult{
 
 	severityStatus(severity, value){
 		const key = [`sev${severity}`];
-		if(value){
+		if(value !== undefined){
 			this.sevStatus[key] = value
 		}
 
@@ -82,6 +82,7 @@ function getHealthFor(hostname){
 		result.severityStatus(1, true);
 		result.severityStatus(2, true);
 		result.severityStatus(3, true);
+
 
 		for(let check of json.checks){
 			if(!check.ok){

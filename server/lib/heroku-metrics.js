@@ -133,6 +133,10 @@ function getMetricValue(arr, thresholds, type, normalize){
 }
 
 function getAppConfig(appName){
+	if(!appName || !appName.replace){
+		log.error({event:'NO_APP_NAME', appName});
+		return {thresholds:config.default_thresholds};
+	}
 	const name = appName.replace(/^ft-next-/, '').replace(/(-eu|-us)$/, '').replace('-v003', '');
 	const appConfig = config.apps.find(app => app.name === name);
 	if(!appConfig){
