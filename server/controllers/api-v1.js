@@ -102,6 +102,38 @@ router.post('/vertical-scale/:direction/:name', (req, res) => {
 	})
 });
 
+router.post('/scale-to-zero/:name', (req, res) => {
+	return co(function* (){
+		const appId = req.params.name;
+		const currentFormation = yield heroku.getCurrentFormation(appId);
+		yield heroku.scale(appId, 0, currentFormation.size);
+		const newFormation = yield heroku.getCurrentFormation(appId);
+		res.json({
+			action: 'FORMATION_UPDATE',
+			newFormation
+		});
+	}).catch(err => {
+		console.error(err.stack);
+		res.sendStatus(500)
+	})
+});
+
+router.post('/restore-scale/:name', (req, res) => {
+	return co(function* (){
+		const appId = req.params.name;
+		const restorePoint = registry.getAppScaleData(appId);
+		yield heroku.scale(appId, restorePoint.quantity, restorePoint.size);
+		const newFormation = yield heroku.getCurrentFormation(appId);
+		res.json({
+			action: 'FORMATION_UPDATE',
+			newFormation
+		});
+	}).catch(err => {
+		console.error(err.stack);
+		res.sendStatus(500)
+	});
+});
+
 router.get('/status/:app', (req, res) => {
 	return co(function* (){
 		const app = registry.getAppData(req.params.app);

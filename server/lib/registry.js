@@ -1,4 +1,5 @@
 const Poller = require('ft-poller');
+const log = require('@financial-times/n-logger').default;
 
 let poller;
 
@@ -13,8 +14,18 @@ function getData(){
 
 function getAppData(name){
 	const allApps = getData();
-	name = name.replace('ft-next-', '').replace('-v003', '');
+	name = name.replace('ft-next-', '').replace('-v003', '').replace(/(-eu|-us)/, '');
 	return allApps.find(a => a.name === name);
 }
 
-module.exports = {init, getData, getAppData};
+function getAppScaleData(name){
+	const app = getAppData(name);
+	log.error({event:'NO_APP_FOUND_IN_REGISTRY', name});
+	const scale = app.versions['1'].processes.web;
+	return {
+		size: scale.size,
+		quantity: scale.scale
+	}
+}
+
+module.exports = {init, getData, getAppData, getAppScaleData};

@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const co = require('co');
-const log = require('@financial-times/n-logger');
+const log = require('@financial-times/n-logger').default;
 
 class HealthResult{
 
