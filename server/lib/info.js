@@ -16,11 +16,17 @@ module.exports = function getAppInfo(app){
 			formation: app.versions['1'].processes
 		};
 
-		for(node of info.nodes){
+		for(let i = 0, l = info.nodes.length; i<l; i++){
+			let node = info.nodes[i];
+			if(typeof node === 'string'){
+				node = {url:node};
+			}
+
 			const herokuInfo = yield heroku.getAppInfo(node.url.replace(/https?:\/\//, '').replace('.herokuapp.com', ''));
 			node.id = herokuInfo.id;
 			node.name = herokuInfo.name;
 			node.currentFormation = yield heroku.getCurrentFormation(node.id);
+			info.nodes[i] = node;
 		}
 
 		return info;

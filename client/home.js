@@ -50,7 +50,7 @@ function addMessage(itemNode, message){
 }
 
 function init(){
-	const rows = $$('.applist__item[data-appname]').slice(0);
+	const rows = $$('.applist--main .applist__item[data-appname]');
 	return co(function* (){
 		for(let row of rows){
 			yield getAppStatus(row);

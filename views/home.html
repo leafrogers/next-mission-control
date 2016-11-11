@@ -11,11 +11,11 @@
 			<!-- Main content (outer div for layout, inner for formatting) -->
 			<div class="o-techdocs-main">
 				<div class="o-techdocs-content">
-					<p>&nbsp;</p>
+					<h2>Apps</h2>
 
-					<div class="o-techdocs-table-wrapper applist">
+					<div class="o-techdocs-table-wrapper applist applist--main">
 						<div class="applist">
-							{{#each apps}}
+							{{#each mainApps}}
 								<div class="applist__item" data-appname="{{name}}">
 									<div class="applist__info">
 										<span class="applist__status applist__status--waiting"></span>
@@ -28,6 +28,23 @@
 
 									</ul>
 								</div>
+							{{/each}}
+						</div>
+					</div>
+
+					<h3>Other Apps</h3>
+					<p>Click through for status.  This is list is not currated and many of these links will not work!</p>
+					<div class="o-techdocs-table-wrapper applist applist--other">
+						<div class="applist">
+							{{#each otherApps}}
+							<div class="applist__item" data-appname="{{name}}">
+								<div class="applist__info">
+									<h4 class="applist__title">{{name}}</h4>
+									<span class="applist__link">
+										<button class="o-buttons"><a href="/{{name}}">Details</a></button>
+									</span>
+								</div>
+							</div>
 							{{/each}}
 						</div>
 					</div>
