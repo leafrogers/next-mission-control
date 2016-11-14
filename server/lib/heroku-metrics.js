@@ -22,6 +22,7 @@ const ERROR_CODE_MAP = new Map([
 	['H10', 'App crashed'],
 	['H12', 'Request timeout'],
 	['H13', 'Connection Closed without response'],
+	['H15', 'Idle Connection'],
 	['H14', 'No web dynos running'],
 	['H18', 'Server request interrupted'],
 	['H19', 'Backend connection timeout'],

@@ -1,0 +1,51 @@
+{
+  "activeprobes": [
+    72,
+    50,
+    107,
+    60,
+    119
+  ],
+  "results": [
+    {
+      "probeid": 119,
+      "time": 1479124672,
+      "status": "up",
+      "responsetime": 68,
+      "statusdesc": "OK",
+      "statusdesclong": "OK"
+    },
+    {
+      "probeid": 60,
+      "time": 1479124612,
+      "status": "up",
+      "responsetime": 260,
+      "statusdesc": "OK",
+      "statusdesclong": "OK"
+    },
+    {
+      "probeid": 107,
+      "time": 1479124552,
+      "status": "up",
+      "responsetime": 216,
+      "statusdesc": "OK",
+      "statusdesclong": "OK"
+    },
+    {
+      "probeid": 72,
+      "time": 1479124492,
+      "status": "up",
+      "responsetime": 52,
+      "statusdesc": "OK",
+      "statusdesclong": "OK"
+    },
+    {
+      "probeid": 50,
+      "time": 1479124432,
+      "status": "up",
+      "responsetime": 251,
+      "statusdesc": "OK",
+      "statusdesclong": "OK"
+    }
+  ]
+}
