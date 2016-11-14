@@ -13,13 +13,17 @@ module.exports = function getAppInfo(app){
 			repo: app.versions['1'].repo,
 			heroku: app.versions['1'].dashboard,
 			nodes: app.versions['1'].nodes,
-			formation: app.versions['1'].processes
+			formation: app.versions['1'].processes,
 		};
 
 		for(let i = 0, l = info.nodes.length; i<l; i++){
 			let node = info.nodes[i];
 			if(typeof node === 'string'){
 				node = {url:node, region:'eu'};
+			}
+
+			if(app.versions['1'].checks && app.versions['1'].checks.availability && app.versions['1'].checks.availability[i]){
+				node.pingdomId = app.versions['1'].checks.availability[i];
 			}
 
 			const herokuInfo = yield heroku.getAppInfo(node.url.replace(/https?:\/\//, '').replace('.herokuapp.com', ''));

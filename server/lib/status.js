@@ -1,4 +1,5 @@
 const ping = require('./ping');
+const pingdom = require('./pingdom');
 const co = require('co');
 const debug = require('debug')('status');
 const Case = require('case');
@@ -19,7 +20,7 @@ function getNodeStatusMessages(status, metrics){
 	if(metrics.errors.length){
 		for(let error of metrics.errors){
 			if(error.status !== 'ok'){
-				messages.push({status:error.status, text:`There have been ${error.count} ${error.title} (${error.code}) errors in the last hour`});
+				messages.push({status:error.status, text:`There have been ${error.count} ${error.title ? error.title + ' ('+error.code+')' : error.code} errors in the last hour`});
 			}
 		}
 	}
@@ -48,7 +49,7 @@ function getNodeStatusMessages(status, metrics){
 }
 
 function getNodeStatus(node, info, metrics){
-	debug('getNodeStatus', node.url);
+	debug('getNodeStatus', node, info);
 	return co(function* (){
 		const status = {
 			region: node.region,
@@ -56,7 +57,7 @@ function getNodeStatus(node, info, metrics){
 			name: node.url.replace(/https?:\/\//, '').replace('.herokuapp.com', '')
 		};
 
-		const gtgPing = yield ping(`${node.url}/__gtg`);
+		const gtgPing = node.pingdomId ? yield pingdom.status(node.pingdomId) : yield ping(`${node.url}/__gtg`);
 		status.up = gtgPing.result;
 		status.health = yield health(node.url);
 
