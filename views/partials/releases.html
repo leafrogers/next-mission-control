@@ -1,0 +1,24 @@
+<table class="release-list">
+	<tbody>
+	<tr>
+		<th>Date</th>
+		<th>Versions</th>
+		<th>Commit</th>
+		<th></th>
+	</tr>
+	{{#each releases}}
+	<tr class="release-list__item">
+		<td>{{date}}</td>
+		<td>{{versions}}</td>
+		<td>
+			{{#if commitUrl}}
+				<a href="{{commitUrl}}" target="_blank">{{hash}}</a>
+			{{else}}
+				{{description}}
+			{{/if}}
+		</td>
+		<td><button class="o-buttons js-api action--rollback" data-method="POST" action="{{rollbackUrl}}">Rollback to here</button></td>
+	</tr>
+	{{/each}}
+	</tbody>
+</table>

@@ -3,7 +3,7 @@ const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const fetchStub = require('./stubs/node-fetch.stub');
 const sinon = require('sinon');
 
-describe.only('Pingdom Adaptor', () => {
+describe('Pingdom Adaptor', () => {
 
 	let pingdom;
 	const pingdomID = '1748747';

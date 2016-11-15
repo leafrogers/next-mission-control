@@ -7,6 +7,9 @@ const auth = require('../middleware/api-auth');
 const info = require('../lib/info');
 const metrics = require('../lib/metrics');
 const status = require('../lib/status');
+const fs = require('fs');
+const path = require('path');
+const Handlebars = require('handlebars');
 
 const DYNO_TYPES = [
 	'standard-1x',
@@ -14,6 +17,10 @@ const DYNO_TYPES = [
 	'performance-m',
 	'performance-l'
 ];
+
+const TEMPLATES = {
+	releases : Handlebars.compile(fs.readFileSync(path.resolve(__dirname, '../../views/partials/releases.html'), {encoding:'utf8'}))
+};
 
 // router.use((req, res, next) => {
 // 	const requestersOrigin = req.get('origin');
@@ -149,6 +156,27 @@ router.get('/status/:app', (req, res) => {
 		console.error(err.stack);
 		res.sendStatus(500);
 	})
+});
+
+router.post(/rollback\/([a-z0-9:\-,]+)/, (req, res) => {
+	return co(function* (){
+		const rollbacks = req.params[0].split(',').map(r => r.split(':'));
+		const releaseInfo = {};
+		for(let [appId, releaseId] of rollbacks){
+			yield heroku.rollback(appId, releaseId);
+			let appInfo = yield info(appId);
+			releaseInfo[appId] = appId.releases;
+		}
+
+		res.json({
+			action: 'ROLLBACK',
+			releases: releaseInfo
+		});
+
+	}).catch(err => {
+		console.error(err.stack);
+		res.sendStatus(500);
+	});
 });
 
 module.exports = router;
