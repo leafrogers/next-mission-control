@@ -141,7 +141,7 @@ function getAppConfig(appName){
 	const name = appName.replace(/^ft-next-/, '').replace(/(-eu|-us)$/, '').replace('-v003', '');
 	const appConfig = config.apps.find(app => app.name === name);
 	if(!appConfig){
-		log.error({event:'NO_APP_CONFIG', name});
+		log.info({event:'NO_APP_CONFIG', name, message:'No config found for this app - will use default thresholds'});
 		return {thresholds:config.default_thresholds};
 	}else{
 		return appConfig;

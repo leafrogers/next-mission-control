@@ -21,6 +21,18 @@
 		{{/each}}
 	</div>
 
+	{{#with lastRelease}}
+		<div class="status-last-release">
+			<p>Last deploy was {{#if commitUrl}}<a target="_blank" href="{{commitUrl}}">{{hash}}</a>{{else}} "{{description}}" {{/if}} on {{date}}
+				{{#if commitUrl}}
+					<button class="o-buttons js-api action--rollback" data-method="POST" data-action="{{rollbackUrl}}">Rollback to here</button>
+				{{/if}}
+
+			</p>
+			<p><a href="#release-history">More releases</a></p>
+		</div>
+	{{/with}}
+
 
 
 	<ul data-o-component="o-tabs" class="o-tabs o-tabs--big o-tabs--buttontabs" role="tablist">

@@ -22,27 +22,31 @@
 			</div>
 
 
-			<h4>Nodes</h4>
+			<h3>Nodes</h3>
 			<div class="o-techdocs-table-wrapper">
 				<table>
 					<tbody>
 					{{#each nodes}}
-					<tr>
-						<th scope="row">REGION</th>
-						<td>{{region}}</td>
-					</tr>
-					<tr>
-						<th scope="row">URL</th>
-						<td>{{url}}</td>
-					</tr>
-					<tr>
-						<th scope="row">ID</th>
-						<td>{{id}}</td>
-					</tr>
+						<tr>
+							<th scope="row">REGION</th>
+							<td>{{region}}</td>
+						</tr>
+						<tr>
+							<th scope="row">URL</th>
+							<td>{{url}}</td>
+						</tr>
+						<tr>
+							<th scope="row">ID</th>
+							<td>{{id}}</td>
+						</tr>
 					{{/each}}
 					</tbody>
 				</table>
+			</div>
 
+			<h3 id="release-history">Releases</h3>
+			<div id="release-history-container" class="o-techdocs-table-wrapper">
+				{{> releases this}}
 			</div>
 
 		</div>

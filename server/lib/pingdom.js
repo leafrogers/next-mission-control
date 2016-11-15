@@ -20,7 +20,7 @@ function status(id){
 			throw new Error(`Pingdom Bad Response: ${response.status} ${response.statusText}`);
 		}else{
 			const responseData = yield response.json();
-			const result = json.results.length && json.results[0].status === 'up';
+			const result = responseData.results.length && responseData.results[0].status === 'up';
 			log.info({event:'PINGDOM_RESULT', id, result});
 			return {result}
 		}

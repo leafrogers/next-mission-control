@@ -264,3 +264,19 @@ li[role="tab"] a{
 .applist--other .applist__item {
 	padding: 10px;
 }
+
+.release-list__item {
+	width: 100%;
+	overflow: hidden;
+
+	button {
+		float: right;
+	}
+}
+
+.action--rollback {
+
+	&:after {
+		content: ' ↰';
+	}
+}

@@ -40,8 +40,9 @@ function doApiAction(button){
 	fetch(url, {method, credentials:'include'})
 		.then(response => {
 			if(!response.ok){
-				console.error('API Request failed', {status:response.status, url, method});
 				hideLoader();
+				console.error('API Request failed', {status:response.status, url, method});
+				throw new Error('API Request failed');
 			}else{
 				return response.json();
 			}

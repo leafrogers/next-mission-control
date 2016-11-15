@@ -131,6 +131,8 @@ module.exports = function getAppStatus(info, metrics){
 				}
 			}, 'ok');
 
+		status.lastRelease = info.releases[0];
+
 		return status;
 	});
 };
